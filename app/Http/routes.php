@@ -11,6 +11,17 @@
 |
 */
 
+/**
+ * Pattern Routes
+ */
+Route::pattern('boardgame', '[0-9]+');
+
+/**
+ * Models binded
+ */
+Route::model('boardgame', 'CapTable\Models\Boardgame');
+
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('boardgames', array('uses' => 'BoardgamesController@getIndex'));
