@@ -29,6 +29,6 @@ class BoardgamesController extends Controller
 		$boardgame->bgg_link = Input::get('bgg_link');
 		$boardgame->save();
 
-		return $this->getBoardgames();
+		return redirect('/boardgames/');
 	}
 }
