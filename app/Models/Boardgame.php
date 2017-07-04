@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-class Boardgame extends AppModel
-{
+use Illuminate\Database\Eloquent\Model;
 
+class Boardgame extends Model
+{
+	
 }

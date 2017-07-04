@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Laravel</title>
-
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+        <title>Boardgames</title>
 
         <style>
-            html, body {
-                height: 100%;
-            }
-
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato';
-            }
-
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
-
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
-
-            .title {
-                font-size: 96px;
+            table, th, td {
+                border: 1px solid black;
             }
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">Boardgames</div>
+        @if (count($boardgames) > 0)
+        <div>
+            <div>
+                Boardgames
+            </div>
+
+            <div>
+                <table>
+
+                    <!-- Table Headings -->
+                    <thead>
+                        <th>Name</th>
+                        <th>BGG link</th>
+                        <th>&nbsp;</th>
+                    </thead>
+
+                    <!-- Table Body -->
+                    <tbody>
+                        @foreach ($boardgames as $boardgame)
+                            <tr>
+                                <!-- Task Name -->
+                                <td>
+                                    <div>{{ $boardgame->name }}</div>
+                                </td>
+
+                                <td>
+                                    <div>{{ $boardgame->bgg_link }}</div>
+                                </td>
+
+                                <td>
+                                    <!-- TODO: Delete Button -->
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
+    @endif
     </body>
 </html>
