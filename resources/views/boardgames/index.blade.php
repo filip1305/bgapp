@@ -32,15 +32,21 @@
                             <tr>
                                 <!-- Task Name -->
                                 <td>
-                                    <div>{{ $boardgame->name }}</div>
+                                    <div>
+                                        {{ $boardgame->name }}
+                                    </div>
                                 </td>
 
                                 <td>
-                                    <div>{{ $boardgame->bgg_link }}</div>
+                                    <div>
+                                         <a href="{{ $boardgame->bgg_link }}" target="_blank">link</a> 
+                                    </div>
                                 </td>
 
                                 <td>
-                                    <!-- TODO: Delete Button -->
+                                    <div>
+                                        <a href="/boardgame/edit/{{ $boardgame->id }}">Edit</a>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
