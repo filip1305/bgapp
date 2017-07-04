@@ -19,7 +19,7 @@ Route::pattern('boardgame', '[0-9]+');
 /**
  * Models binded
  */
-Route::model('boardgame', 'CapTable\Models\Boardgame');
+Route::model('boardgame', 'App\Models\Boardgame');
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');
@@ -38,6 +38,8 @@ Route::group(['middleware' => 'auth'], function() {
 
 	Route::get('boardgames', 'BoardgamesController@getBoardgames');
 	Route::get('boardgame/add', 'BoardgamesController@getNewBoardgame');
+	Route::get('boardgame/edit/{boardgame}', 'BoardgamesController@getEditBoardgame');
 	
 	Route::post('boardgame/add', 'BoardgamesController@postNewBoardgame');
+	Route::post('boardgame/edit/{boardgame}', 'BoardgamesController@postUpdateBoardgame');
 });

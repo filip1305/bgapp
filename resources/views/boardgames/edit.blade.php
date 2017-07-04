@@ -1,6 +1,6 @@
 <div>
     <!-- New Task Form -->
-    <form action="/boardgame/add" method="POST" class="form-horizontal">
+    <form action="/boardgame/edit/{{$boardgame->id}}" method="POST" class="form-horizontal">
         {{ csrf_field() }}
 
         <!-- Task Name -->
@@ -8,13 +8,13 @@
             <label>Task</label>
 
             <div>
-                <input type="text" name="name">
+                <input type="text" name="name" value="{{$boardgame->name}}">
             </div>
 
             <label>BGG Link</label>
 
             <div>
-                <input type="text" name="bgg_link">
+                <input type="text" name="bgg_link" value="{{$boardgame->bgg_link}}">
             </div>
         </div>
 
