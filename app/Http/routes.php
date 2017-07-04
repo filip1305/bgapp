@@ -21,7 +21,23 @@ Route::pattern('boardgame', '[0-9]+');
  */
 Route::model('boardgame', 'CapTable\Models\Boardgame');
 
-Route::get('/', function () {
-    return view('welcome');
+// Authentication routes...
+Route::get('auth/login', 'Auth\AuthController@getLogin');
+Route::post('auth/login', 'Auth\AuthController@postLogin');
+Route::get('auth/logout', 'Auth\AuthController@getLogout');
+
+// Registration routes...
+Route::get('auth/register', 'Auth\AuthController@getRegister');
+Route::post('auth/register', 'Auth\AuthController@postRegister');
+
+Route::group(['middleware' => 'auth'], function() {
+	Route::get('/', function () {
+	    return view('welcome');
+	});
+
+
+	Route::get('boardgames', 'BoardgamesController@getBoardgames');
+	Route::get('boardgame/add', 'BoardgamesController@getNewBoardgame');
+	
+	Route::post('boardgame/add', 'BoardgamesController@postNewBoardgame');
 });
-Route::get('boardgames', array('uses' => 'BoardgamesController@getIndex'));
