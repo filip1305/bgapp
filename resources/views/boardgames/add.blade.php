@@ -1,30 +1,36 @@
-<div>
-    <!-- New Task Form -->
-    <form action="/boardgame/add" method="POST" class="form-horizontal">
-        {{ csrf_field() }}
+@extends('bgapp')
 
-        <!-- Task Name -->
-        <div>
-            <label>Task</label>
+@section('content')
+    <div class="center">
 
-            <div>
-                <input type="text" name="name">
-            </div>
-
-            <label>BGG Link</label>
-
-            <div>
-                <input type="text" name="bgg_link">
-            </div>
+        <div class="center">
+            <h3>Create new boardgame</h3>
         </div>
+        
+        <form action="/boardgame/add" method="POST" class="form-horizontal">
+            {{ csrf_field() }}
 
-        <!-- Add Task Button -->
-        <div>
             <div>
-                <button type="submit">
-                    Save
-                </button>
+                <label>Name</label>
+
+                <div>
+                    <input type="text" name="name">
+                </div>
+
+                <label>BGG Link</label>
+
+                <div>
+                    <input type="text" name="bgg_link">
+                </div>
             </div>
-        </div>
-    </form>
-</div>
+
+            <div>
+                <div>
+                    <button type="submit">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+@stop
