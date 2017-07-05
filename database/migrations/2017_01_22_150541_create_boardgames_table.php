@@ -17,6 +17,7 @@ class CreateBoardgamesTable extends Migration
             $table->string('name', 255);
             $table->string('bgg_link', 511);
             $table->nullableTimestamps();
+            $table->datetime('deleted_at')->nullable();
         });
     }
 

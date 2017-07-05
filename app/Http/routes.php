@@ -32,7 +32,8 @@ Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/', function () {
-	    return view('welcome');
+		return redirect('/boardgames/');
+	    //return view('welcome');
 	});
 
 
