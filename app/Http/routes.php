@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::get('boardgames', 'BoardgamesController@getBoardgames');
 	Route::get('boardgame/add', 'BoardgamesController@getNewBoardgame');
 	Route::get('boardgame/edit/{boardgame}', 'BoardgamesController@getEditBoardgame');
+	Route::get('boardgame/{boardgame}', 'BoardgamesController@getBoardgame');
 	
 	Route::post('boardgame/add', 'BoardgamesController@postNewBoardgame');
 	Route::post('boardgame/edit/{boardgame}', 'BoardgamesController@postUpdateBoardgame');

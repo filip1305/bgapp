@@ -10,7 +10,7 @@ class BoardgamesController extends Controller
 
 	public function getBoardgames()
 	{
-		$boardgames = Boardgame::orderBy('name', 'asc')->get();
+		$boardgames = Boardgame::orderBy('rank', 'asc')->get();
 
 		return view('boardgames.index', array(
 			'boardgames' => $boardgames
@@ -25,8 +25,8 @@ class BoardgamesController extends Controller
 	public function postNewBoardgame()
 	{
 		$boardgame = new Boardgame;
-		$boardgame->name = Input::get('name');
-		$boardgame->bgg_link = Input::get('bgg_link');
+		$boardgame->name = trim(Input::get('name'));
+		$boardgame->bgg_link = trim(Input::get('bgg_link'));
 
 		$bgg_id = 0;
 
@@ -81,8 +81,8 @@ class BoardgamesController extends Controller
 
 	public function postUpdateBoardgame(Boardgame $boardgame)
 	{
-		$boardgame->name = Input::get('name');
-		$boardgame->bgg_link = Input::get('bgg_link');
+		$boardgame->name = trim(Input::get('name'));
+		$boardgame->bgg_link = trim(Input::get('bgg_link'));
 		
 		$bgg_id = 0;
 
@@ -126,6 +126,13 @@ class BoardgamesController extends Controller
 		$boardgame->save();
 
 		return redirect('/boardgames/');
+	}
+
+	public function getBoardgame(Boardgame $boardgame)
+	{
+		return view('boardgames.view', array(
+			'boardgame' => $boardgame
+		));
 	}
 
 	private function getDataFromBGG($id){

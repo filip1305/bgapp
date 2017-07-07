@@ -2,16 +2,18 @@
 
 @section('content')
 
-        @if (count($boardgames) > 0)
+    <div>
+        <div class="center">
+            <h3>Boardgames</h3>
+        </div>
+
+        <div class="right">
+            <a href="/boardgame/add" class="button">Add new boardgame</a>
+        </div>
+    </div>
+
+    @if (count($boardgames) > 0)
         <div>
-            <div class="center">
-                <h3>Boardgames</h3>
-            </div>
-
-            <div class="right">
-                <a href="/boardgame/add" class="button">Add new boardgame</a>
-            </div>
-
             <div>
                 <table class="striped">
 
