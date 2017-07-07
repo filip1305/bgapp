@@ -8,6 +8,16 @@
         </div>
 
         <div class="right">
+            <form action="/boardgames" method="GET" class="form-horizontal">
+                <div class="input-group custom-search-form">
+                    <input type="text" class="form-control" name="search" placeholder="Search..." value="{{$search}}">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default-sm" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </form>
             <a href="/boardgame/add" class="button">Add new boardgame</a>
         </div>
     </div>

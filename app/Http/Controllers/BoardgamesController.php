@@ -10,10 +10,18 @@ class BoardgamesController extends Controller
 
 	public function getBoardgames()
 	{
-		$boardgames = Boardgame::orderBy('rank', 'asc')->get();
+		$search = '';
+		$search = \Request::get('search');
+
+
+
+		$boardgames = Boardgame::where('name','like','%'.$search.'%')
+			->orderBy('rank', 'asc')
+			->get();
 
 		return view('boardgames.index', array(
-			'boardgames' => $boardgames
+			'boardgames' => $boardgames,
+			'search' => $search,
 		));
 	}
 
