@@ -15,11 +15,13 @@
  * Pattern Routes
  */
 Route::pattern('boardgame', '[0-9]+');
+Route::pattern('expansion', '[0-9]+');
 
 /**
  * Models binded
  */
 Route::model('boardgame', 'App\Models\Boardgame');
+Route::model('expansion', 'App\Models\Expansion');
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');
@@ -37,11 +39,23 @@ Route::group(['middleware' => 'auth'], function() {
 	});
 
 
+	// Boardgames
 	Route::get('boardgames', 'BoardgamesController@getBoardgames');
 	Route::get('boardgame/add', 'BoardgamesController@getNewBoardgame');
 	Route::get('boardgame/edit/{boardgame}', 'BoardgamesController@getEditBoardgame');
-	Route::get('boardgame/{boardgame}', 'BoardgamesController@getBoardgame');
+	Route::get('boardgame/view/{boardgame}', 'BoardgamesController@getBoardgame');
+	Route::get('boardgame/refresh', 'BoardgamesController@refreshBggData');
 	
 	Route::post('boardgame/add', 'BoardgamesController@postNewBoardgame');
 	Route::post('boardgame/edit/{boardgame}', 'BoardgamesController@postUpdateBoardgame');
+
+	// Expansions
+	Route::get('expansions', 'ExpansionsController@getExpansions');
+	Route::get('expansion/add', 'ExpansionsController@getNewExpansion');
+	Route::get('expansion/edit/{expansion}', 'ExpansionsController@getEditExpansion');
+	Route::get('expansion/view/{expansion}', 'ExpansionsController@getExpansion');
+	Route::get('expansion/refresh', 'ExpansionsController@refreshBggData');
+
+	Route::post('expansion/add', 'ExpansionsController@postNewExpansion');
+	Route::post('expansion/edit/{expansion}', 'ExpansionsController@postUpdateExpansion');
 });

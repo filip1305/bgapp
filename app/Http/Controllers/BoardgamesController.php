@@ -139,7 +139,8 @@ class BoardgamesController extends Controller
 	public function getBoardgame(Boardgame $boardgame)
 	{
 		return view('boardgames.view', array(
-			'boardgame' => $boardgame
+			'boardgame' => $boardgame,
+			'expansions' => $boardgame->expansions
 		));
 	}
 
@@ -167,5 +168,33 @@ class BoardgamesController extends Controller
 	    $array = json_decode($json,TRUE);
 
 	    return $array['boardgame'];
+	}
+
+	public function refreshBggData(){
+		$boardgames = Boardgame::get();
+
+		foreach ($boardgames as $boardgame) {
+
+			if ($boardgame->bgg_id > 0) {
+				$bgg_date = $this->getDataFromBGG($boardgame->bgg_id);
+
+				if (!empty($bgg_date)) {
+					$boardgame->yearpublished = $bgg_date['yearpublished'];
+					$boardgame->minplayers = $bgg_date['minplayers'];
+					$boardgame->maxplayers = $bgg_date['maxplayers'];
+					$boardgame->minplaytime = $bgg_date['minplaytime'];
+					$boardgame->maxplaytime = $bgg_date['maxplaytime'];
+					$boardgame->description = $bgg_date['description'];
+					$boardgame->thumbnail = $bgg_date['thumbnail'];
+					$boardgame->image = $bgg_date['image'];
+					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+				}
+
+				$boardgame->save();
+			}
+
+		}
+
+	    return redirect('/boardgames/');
 	}
 }
