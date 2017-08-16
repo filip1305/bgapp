@@ -1,6 +1,11 @@
 @extends('bgapp')
 
 @section('content')
+    <ul class="breadcrumbs">
+        <li><a href="/boardgames/">Boardgames</a></li>
+        <li class="last"><a href="" onclick="return false">Create new boardgame</a></li>
+    </ul>
+
     <div class="center">
 
         <div class="center">

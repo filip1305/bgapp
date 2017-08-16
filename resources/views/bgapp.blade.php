@@ -18,6 +18,11 @@
 </head>
 <body>
 
+	<ul class="menu">
+		<li><a href="/boardgames">Boardgames</a></li>
+		<li><a href="/expansions">Expansions</a></li>
+	</ul>
+
 	<div id="content">
 		@yield('content')
 	</div>

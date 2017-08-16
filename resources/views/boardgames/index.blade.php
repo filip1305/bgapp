@@ -2,6 +2,10 @@
 
 @section('content')
 
+    <ul class="breadcrumbs">
+        <li class="last"><a href="" onclick="return false">Boardgames</a></li>
+    </ul>
+
     <div>
         <div class="center">
             <h3>Boardgames</h3>
@@ -19,6 +23,7 @@
                 </div>
             </form>
             <a href="/boardgame/add" class="button">Add new boardgame</a>
+            <a href="/boardgame/refresh" class="button">Refresh BGG data</a>
         </div>
     </div>
 
@@ -42,7 +47,9 @@
                             <tr>
                                 <td>{{ $boardgame->rank }}</td>
                                 <td class="center"><img style="max-height: 50px; width: auto; " src="{{$boardgame->thumbnail}}" /></td>
-                                <td>{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</td>
+                                <td>
+                                    <a href="/boardgame/view/{{ $boardgame->id }}">{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</a>
+                                </td>
                                 <td>{{ $boardgame->minplayers }} - {{ $boardgame->maxplayers }}</td>
                                 <td>{{ $boardgame->minplaytime }} - {{ $boardgame->maxplaytime }}</td>
                                 <td>
