@@ -8,11 +8,11 @@
 	</title>
 	<meta name="token" content="{{ Session::token() }}">
 
-	<link rel="stylesheet" type="text/css" href="/kickstart/css/kickstart.css">
+	<link rel="stylesheet" href="{{ URL::asset('/kickstart/css/kickstart.css') }}">
 
 	@yield('styles')
 
-	<script type="text/javascript" src="/kickstart/js/kickstart.js"></script>
+	<script type="text/javascript" src="{{ URL::asset('/kickstart/js/kickstart.js') }}"></script>
 
 	@yield('scripts')
 </head>

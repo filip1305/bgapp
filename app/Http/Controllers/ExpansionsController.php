@@ -42,9 +42,9 @@ class ExpansionsController extends Controller
 
 		$bgg_id = 0;
 
-		if (strpos($expansion->bgg_link, 'expansiongeek.com/boardgameexpansion') > 0) {
+		if (strpos($expansion->bgg_link, 'boardgamegeek.com/boardgameexpansion') > 0) {
 
-			$link = str_replace("https://expansiongeek.com/boardgameexpansion","",$expansion->bgg_link);
+			$link = str_replace("https://boardgamegeek.com/boardgameexpansion","",$expansion->bgg_link);
 
 			$link = substr($link, strpos($link, '/') + 1);
 
@@ -75,7 +75,7 @@ class ExpansionsController extends Controller
 				$expansion->description = $bgg_date['description'];
 				$expansion->thumbnail = $bgg_date['thumbnail'];
 				$expansion->image = $bgg_date['image'];
-				$expansion->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+				$expansion->rank = 0;//$bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
 			}
 		}
 
@@ -150,7 +150,7 @@ class ExpansionsController extends Controller
 				$expansion->description = $bgg_date['description'];
 				$expansion->thumbnail = $bgg_date['thumbnail'];
 				$expansion->image = $bgg_date['image'];
-				$expansion->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+				$expansion->rank = 0;//$bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
 			}
 		}
 
@@ -224,7 +224,7 @@ class ExpansionsController extends Controller
 					$expansion->description = $bgg_date['description'];
 					$expansion->thumbnail = $bgg_date['thumbnail'];
 					$expansion->image = $bgg_date['image'];
-					$expansion->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+					$expansion->rank = 0;//$bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
 				}
 
 				$expansion->save();

@@ -3,7 +3,7 @@
 @section('content')
     <ul class="breadcrumbs">
         <li><a href="/boardgames/">Boardgames</a></li>
-        <li>Edit boardgame</li>
+        <li class="last"><a href="" onclick="return false">Edit boardgame</a></li>
     </ul>
 
     <div class="center">
