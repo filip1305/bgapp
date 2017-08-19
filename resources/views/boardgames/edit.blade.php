@@ -17,15 +17,13 @@
 
             <div>
                 <label>Name</label>
-
                 <div>
-                    <input type="text" name="name" value="{{$boardgame->name}}">
+                    <input type="text" name="name" value="{{$boardgame->name}}" style="width:350px;">
                 </div>
 
                 <label>BGG Link</label>
-
                 <div>
-                    <input type="text" name="bgg_link" value="{{$boardgame->bgg_link}}">
+                    <input type="text" name="bgg_link" value="{{$boardgame->bgg_link}}" style="width:350px;">
                 </div>
             </div>
 

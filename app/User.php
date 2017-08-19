@@ -36,4 +36,14 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    public function boardgames()
+    {
+        return $this->belongsToMany('App\Models\Boardgame', 'user_boardgames', 'user_id', 'boardgame_id')->orderBy('name', 'asc');
+    }
+
+    public function expansions()
+    {
+        return $this->belongsToMany('App\Models\Expansion', 'user_expansions', 'user_id', 'expansion_id')->orderBy('name', 'asc');
+    }
 }

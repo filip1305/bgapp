@@ -17,15 +17,13 @@
 
             <div>
                 <label>Name</label>
-
                 <div>
-                    <input type="text" name="name">
+                    <input type="text" name="name" style="width:350px;">
                 </div>
 
                 <label>BGG Link</label>
-
                 <div>
-                    <input type="text" name="bgg_link">
+                    <input type="text" name="bgg_link" style="width:350px;">
                 </div>
             </div>
 

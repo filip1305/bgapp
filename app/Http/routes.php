@@ -16,12 +16,14 @@
  */
 Route::pattern('boardgame', '[0-9]+');
 Route::pattern('expansion', '[0-9]+');
+Route::pattern('user', '[0-9]+');
 
 /**
  * Models binded
  */
 Route::model('boardgame', 'App\Models\Boardgame');
 Route::model('expansion', 'App\Models\Expansion');
+Route::model('user', 'App\User');
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');
@@ -58,4 +60,20 @@ Route::group(['middleware' => 'auth'], function() {
 
 	Route::post('expansion/add', 'ExpansionsController@postNewExpansion');
 	Route::post('expansion/edit/{expansion}', 'ExpansionsController@postUpdateExpansion');
+
+	// Users
+	Route::get('users', 'UsersController@getUsers');
+	Route::get('user/view/{user}', 'UsersController@getUser');
+	Route::get('user/view_me', 'UsersController@getMyProfile');
+
+	// User boardgames
+	Route::get('user/boardgame/add', 'UsersController@getNewBoardgame');
+	Route::post('user/boardgame/add', 'UsersController@postNewBoardgame');
+	Route::get('user/boardgame/delete/{boardgame}', 'UsersController@getDeleteBoardgame');
+
+	// User expansions
+	Route::get('user/expansion/add', 'UsersController@getNewExpansion');
+	Route::post('user/expansion/add', 'UsersController@postNewExpansion');
+	Route::get('user/expansion/delete/{expansion}', 'UsersController@getDeleteExpansion');
+
 });

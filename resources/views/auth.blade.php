@@ -18,18 +18,6 @@
 	@yield('scripts')
 </head>
 <body>
-
-	<ul class="menu">
-		<li><a href="/boardgames">Boardgames</a></li>
-		<li><a href="/expansions">Expansions</a></li>
-		<li><a href="/users">Users</a>
-			<ul>
-				<li><a href="/user/view_me">My profile</a></li>
-			</ul>
-		</li>
-		<li class="right"><a href="/auth/logout">Logout</a></li>
-	</ul>
-
 	<div id="content">
 		@yield('content')
 	</div>

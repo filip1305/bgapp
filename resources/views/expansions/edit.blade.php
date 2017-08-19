@@ -18,7 +18,7 @@
             <div>
                 <label>Name</label>
                 <div>
-                    <input type="text" name="name" value="{{$expansion->name}}">
+                    <input type="text" name="name" value="{{$expansion->name}}" style="width:350px;">
                 </div>
 
                 <label>Boardgames</label>
@@ -36,7 +36,7 @@
 
                 <label>BGG Link</label>
                 <div>
-                    <input type="text" name="bgg_link" value="{{$expansion->bgg_link}}">
+                    <input type="text" name="bgg_link" value="{{$expansion->bgg_link}}" style="width:350px;">
                 </div>
             </div>
 

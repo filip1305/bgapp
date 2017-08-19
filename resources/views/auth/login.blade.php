@@ -1,21 +1,39 @@
-<form method="POST" action="/auth/login">
-    {!! csrf_field() !!}
+@extends('auth')
 
-    <div>
-        Email
-        <input type="email" name="email" value="{{ old('email') }}">
-    </div>
+@section('content')
 
-    <div>
-        Password
-        <input type="password" name="password" id="password">
-    </div>
+    <div class="center">
 
-    <div>
-        <input type="checkbox" name="remember"> Remember Me
-    </div>
+        <div class="center">
+            <h3>Login</h3>
+        </div>
+        
+        <form action="/auth/login" method="POST" class="form-horizontal">
+            {{ csrf_field() }}
 
-    <div>
-        <button type="submit">Login</button>
+            <div>
+                <label>Email</label>
+                <div>
+                    <input type="email" name="email" value="{{ old('email') }}">
+                </div>
+            </div>
+
+            <div>
+                <label>Password</label>
+                <div>
+                    <input type="password" name="password" id="password">
+                </div>
+            </div>
+
+            <div>
+                <input type="checkbox" name="remember"> Remember Me
+            </div>
+
+            <div>
+                <button type="submit">Login</button>
+                <a href="/auth/register">Register</a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
+@stop

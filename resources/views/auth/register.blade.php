@@ -1,27 +1,52 @@
-<form method="POST" action="/auth/register">
-    {!! csrf_field() !!}
+@extends('auth')
 
-    <div>
-        Name
-        <input type="text" name="name" value="{{ old('name') }}">
-    </div>
+@section('content')
 
-    <div>
-        Email
-        <input type="email" name="email" value="{{ old('email') }}">
-    </div>
+    <div class="center">
 
-    <div>
-        Password
-        <input type="password" name="password">
-    </div>
+        <div class="center">
+            <h3>Login</h3>
+        </div>
+        
+        <form action="/auth/login" method="POST" class="form-horizontal">
+            {{ csrf_field() }}
 
-    <div>
-        Confirm Password
-        <input type="password" name="password_confirmation">
-    </div>
+            <div>
+                <label>Name</label>
+                <div>
+                    <input type="text" name="name" value="{{ old('name') }}">
+                </div>
+            </div>
 
-    <div>
-        <button type="submit">Register</button>
+            <div>
+                <label>Email</label>
+                <div>
+                    <input type="email" name="email" value="{{ old('email') }}">
+                </div>
+            </div>
+
+            <div>
+                <label>Password</label>
+                <div>
+                    <input type="password" name="password">
+                </div>
+            </div>
+
+            <div>
+                <label>Confirm Password</label>
+                <div>
+                    <input type="password" name="password_confirmation">
+                </div>
+            </div>
+
+            <div>
+                <input type="checkbox" name="remember"> Remember Me
+            </div>
+
+            <div>
+                <button type="submit">Register</button>
+            </div>
+        </form>
     </div>
-</form>
+</div>
+@stop

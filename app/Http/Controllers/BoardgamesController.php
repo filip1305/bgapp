@@ -13,10 +13,8 @@ class BoardgamesController extends Controller
 		$search = '';
 		$search = \Request::get('search');
 
-
-
 		$boardgames = Boardgame::where('name','like','%'.$search.'%')
-			->orderBy('rank', 'asc')
+			->orderByRaw('rank = 0 ASC, rank')
 			->get();
 
 		return view('boardgames.index', array(
@@ -71,7 +69,14 @@ class BoardgamesController extends Controller
 				$boardgame->description = $bgg_date['description'];
 				$boardgame->thumbnail = $bgg_date['thumbnail'];
 				$boardgame->image = $bgg_date['image'];
-				$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+
+				if (count($bgg_date['statistics']['ratings']['ranks']['rank']) > 1) {
+					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+				} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
+					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
+				} else {
+					$boardgame->rank = NULL;
+				}
 			}
 		}
 
@@ -127,7 +132,14 @@ class BoardgamesController extends Controller
 				$boardgame->description = $bgg_date['description'];
 				$boardgame->thumbnail = $bgg_date['thumbnail'];
 				$boardgame->image = $bgg_date['image'];
-				$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+				
+				if (count($bgg_date['statistics']['ratings']['ranks']['rank']) > 1) {
+					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+				} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
+					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
+				} else {
+					$boardgame->rank = NULL;
+				}
 			}
 		}
 
@@ -187,7 +199,14 @@ class BoardgamesController extends Controller
 					$boardgame->description = $bgg_date['description'];
 					$boardgame->thumbnail = $bgg_date['thumbnail'];
 					$boardgame->image = $bgg_date['image'];
-					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+					
+					if (count($bgg_date['statistics']['ratings']['ranks']['rank']) > 1) {
+						$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+					} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
+						$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
+					} else {
+						$boardgame->rank = NULL;
+					}
 				}
 
 				$boardgame->save();

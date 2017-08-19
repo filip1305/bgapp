@@ -16,7 +16,7 @@ class ExpansionsController extends Controller
 		$search = \Request::get('search');
 
 		$expansions = Expansion::where('name','like','%'.$search.'%')
-			->orderBy('rank', 'asc')
+			->orderBy('name', 'asc')
 			->get();
 
 		return view('expansions.index', array(
