@@ -71,6 +71,9 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::post('user/boardgame/add', 'UsersController@postNewBoardgame');
 	Route::get('user/boardgame/delete/{boardgame}', 'UsersController@getDeleteBoardgame');
 
+	Route::get('user/password', 'UsersController@getChangePass');
+	Route::post('user/password', 'UsersController@postChangePass');
+
 	// User expansions
 	Route::get('user/expansion/add', 'UsersController@getNewExpansion');
 	Route::post('user/expansion/add', 'UsersController@postNewExpansion');

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Boardgame;
+use App\Models\UserBoardgame;
+use Auth;
+use Illuminate\Http\Request;
 use Input;
 
 class BoardgamesController extends Controller
@@ -10,16 +13,51 @@ class BoardgamesController extends Controller
 
 	public function getBoardgames()
 	{
-		$search = '';
-		$search = \Request::get('search');
+		$name = '';
+		$players = '';
+		$type = 0;
 
-		$boardgames = Boardgame::where('name','like','%'.$search.'%')
-			->orderByRaw('rank = 0 ASC, rank')
-			->get();
+		$name = \Request::get('name');
+		$players = \Request::get('players');
+		$type = \Request::get('type');
+
+		$filters = [
+			'name' => $name,
+			'players' => $players,
+			'type' => $type
+		];
+
+		$loged_user = Auth::user();
+
+		$query = Boardgame::query();
+
+		$query = $query->where('name','like','%'.$name.'%');
+		$query = $query->orderByRaw('rank = 0 ASC, rank');
+
+		if (!empty($players)) {
+			$query = $query->where('minplayers', '<=', $players);
+			$query = $query->where('maxplayers', '>=', $players);
+		}
+
+		if ($type == 1) {
+			$my_bgs = UserBoardgame::where('user_id', $loged_user->id)
+				->get();
+
+			$ids = [];
+
+			foreach ($my_bgs as $my_bs) {
+				$ids[] = $my_bs->boardgame_id;
+			}
+
+			$query = $query->whereIn('id', $ids);
+		}
+
+		$boardgames = $query->get();
 
 		return view('boardgames.index', array(
 			'boardgames' => $boardgames,
-			'search' => $search,
+			'filters' => $filters,
+			'admin' => $loged_user->admin
 		));
 	}
 
@@ -28,7 +66,7 @@ class BoardgamesController extends Controller
 		return view('boardgames.add', array());
 	}
 
-	public function postNewBoardgame()
+	public function postNewBoardgame(Request $request)
 	{
 		$boardgame = new Boardgame;
 		$boardgame->name = trim(Input::get('name'));
@@ -54,7 +92,7 @@ class BoardgamesController extends Controller
 		$boardgame->description = NULL;
 		$boardgame->thumbnail = NULL;
 		$boardgame->image = NULL;
-		$boardgame->rank = NULL;
+		$boardgame->rank = 0;
 
 		if ($bgg_id > 0) {
 			$bgg_date = $this->getDataFromBGG($bgg_id);
@@ -75,8 +113,12 @@ class BoardgamesController extends Controller
 				} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
 					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
 				} else {
-					$boardgame->rank = NULL;
+					$boardgame->rank = 0;
 				}
+
+				$this->validate($request, [
+			        'bgg_link' => 'unique:boardgames,bgg_link',
+			    ]);
 			}
 		}
 
@@ -92,7 +134,7 @@ class BoardgamesController extends Controller
 		));
 	}
 
-	public function postUpdateBoardgame(Boardgame $boardgame)
+	public function postUpdateBoardgame(Boardgame $boardgame, Request $request)
 	{
 		$boardgame->name = trim(Input::get('name'));
 		$boardgame->bgg_link = trim(Input::get('bgg_link'));
@@ -117,7 +159,7 @@ class BoardgamesController extends Controller
 		$boardgame->description = NULL;
 		$boardgame->thumbnail = NULL;
 		$boardgame->image = NULL;
-		$boardgame->rank = NULL;
+		$boardgame->rank = 0;
 
 		if ($bgg_id > 0) {
 			$bgg_date = $this->getDataFromBGG($bgg_id);
@@ -138,8 +180,12 @@ class BoardgamesController extends Controller
 				} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
 					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
 				} else {
-					$boardgame->rank = NULL;
+					$boardgame->rank = 0;
 				}
+
+				$this->validate($request, [
+			        'bgg_link' => 'unique:boardgames,bgg_link,' . $boardgame->id,
+			    ]);
 			}
 		}
 
@@ -183,6 +229,12 @@ class BoardgamesController extends Controller
 	}
 
 	public function refreshBggData(){
+		$loged_user = Auth::user();
+
+		if ($loged_user->admin != 1) {
+			return redirect('/boardgames/');
+		}
+
 		$boardgames = Boardgame::get();
 
 		foreach ($boardgames as $boardgame) {
@@ -205,7 +257,7 @@ class BoardgamesController extends Controller
 					} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
 						$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
 					} else {
-						$boardgame->rank = NULL;
+						$boardgame->rank = 0;
 					}
 				}
 

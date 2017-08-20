@@ -10,20 +10,34 @@
         <div class="center">
             <h3>Boardgames</h3>
         </div>
-
+            
         <div class="right">
+            <a href="/boardgame/add" class="button">Add new boardgame</a>
+            @if ($admin == 1)
+                <a href="/boardgame/refresh" class="button">Refresh BGG data</a>
+            @endif
+
             <form action="/boardgames" method="GET" class="form-horizontal">
                 <div class="input-group custom-search-form">
-                    <input type="text" class="form-control" name="search" placeholder="Search..." value="{{$search}}">
+                    Name: <input type="text" class="form-control" name="name" placeholder="Name..." value="{{ $filters['name'] }}">
+                    <select name="type">
+                        @if ($filters['type'] == 0)
+                            <option value="0" selected="selected">- All -</option>
+                            <option value="1">Only mine</option>
+                        @else
+                            <option value="0">- All -</option>
+                            <option value="1" selected="selected">Only mine</option>
+                        @endif
+                    </select>
+                    Players: <input type="text" class="form-control" name="players" placeholder="1" value="{{ $filters['players'] }}" style="width:50px;">
                     <span class="input-group-btn">
                         <button class="btn btn-default-sm" type="submit">
                             <i class="fa fa-search"></i>
                         </button>
+                        <a href="/boardgames" class="button">Clear</a>
                     </span>
                 </div>
             </form>
-            <a href="/boardgame/add" class="button">Add new boardgame</a>
-            <a href="/boardgame/refresh" class="button">Refresh BGG data</a>
         </div>
     </div>
 

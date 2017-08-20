@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Expansion;
 use App\Models\Boardgame;
 use App\Models\BoardgameExpansion;
+use App\Models\Expansion;
+use Auth;
+use Illuminate\Http\Request;
 use Input;
 
 class ExpansionsController extends Controller
@@ -19,9 +21,12 @@ class ExpansionsController extends Controller
 			->orderBy('name', 'asc')
 			->get();
 
+		$loged_user = Auth::user();
+
 		return view('expansions.index', array(
 			'expansions' => $expansions,
 			'search' => $search,
+			'admin' => $loged_user->admin
 		));
 	}
 
@@ -34,7 +39,7 @@ class ExpansionsController extends Controller
 		));
 	}
 
-	public function postNewExpansion()
+	public function postNewExpansion(Request $request)
 	{
 		$expansion = new Expansion;
 		$expansion->name = trim(Input::get('name'));
@@ -76,6 +81,10 @@ class ExpansionsController extends Controller
 				$expansion->thumbnail = $bgg_date['thumbnail'];
 				$expansion->image = $bgg_date['image'];
 				$expansion->rank = 0;//$bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+
+				$this->validate($request, [
+			        'bgg_link' => 'unique:expansions,bgg_link',
+			    ]);
 			}
 		}
 
@@ -110,7 +119,7 @@ class ExpansionsController extends Controller
 		));
 	}
 
-	public function postUpdateExpansion(Expansion $expansion)
+	public function postUpdateExpansion(Expansion $expansion, Request $request)
 	{
 		$expansion->name = trim(Input::get('name'));
 		$expansion->bgg_link = trim(Input::get('bgg_link'));
@@ -151,6 +160,10 @@ class ExpansionsController extends Controller
 				$expansion->thumbnail = $bgg_date['thumbnail'];
 				$expansion->image = $bgg_date['image'];
 				$expansion->rank = 0;//$bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+
+				$this->validate($request, [
+			        'bgg_link' => 'unique:expansions,bgg_link' . $expansion->id,
+			    ]);
 			}
 		}
 
@@ -208,6 +221,12 @@ class ExpansionsController extends Controller
 	}
 
 	public function refreshBggData(){
+		$loged_user = Auth::user();
+
+		if ($loged_user->admin != 1) {
+			return redirect('/expansions/');
+		}
+
 		$expansions = Expansion::get();
 
 		foreach ($expansions as $expansion) {

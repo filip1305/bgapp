@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use Input;
-use Auth;
-use App\Models\UserBoardgame;
-use App\Models\UserExpansion;
 use App\Models\Boardgame;
 use App\Models\Expansion;
+use App\Models\UserBoardgame;
+use App\Models\UserExpansion;
+use App\User;
+use Auth;
+use Hash;
+use Illuminate\Http\Request;
+use Input;
 
 class UsersController extends Controller
 {
@@ -143,6 +145,30 @@ class UsersController extends Controller
 	public function getMyProfile()
 	{
 		$loged_user = Auth::user();
+		return redirect('/user/view/' . $loged_user->id);
+	}
+
+	public function getChangePass()
+	{
+		return view('users.change_password', array());
+	}
+
+	public function postChangePass(Request $request)
+	{
+		$loged_user = Auth::user();
+
+		$this->validate($request, [
+	        'new_password' => 'required|min:8',
+	    ]);
+
+		if ((Hash::check(Input::get('old_password'), $loged_user->password)) && (Input::get('new_password') == Input::get('password_confirmation'))) {
+		    $loged_user->password = bcrypt(Input::get('new_password'));
+
+		    $loged_user->save();
+		} else {
+			return view('users.change_password', array());
+		}
+
 		return redirect('/user/view/' . $loged_user->id);
 	}
 }

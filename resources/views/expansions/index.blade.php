@@ -12,6 +12,11 @@
         </div>
 
         <div class="right">
+            <a href="/expansion/add" class="button">Add new expansion</a>
+            @if ($admin == 1)
+                <a href="/expansion/refresh" class="button">Refresh BGG data</a>
+            @endif
+            
             <form action="/expansions" method="GET" class="form-horizontal">
                 <div class="input-group custom-search-form">
                     <input type="text" class="form-control" name="search" placeholder="Search..." value="{{$search}}">
@@ -22,8 +27,6 @@
                     </span>
                 </div>
             </form>
-            <a href="/expansion/add" class="button">Add new expansion</a>
-            <a href="/expansion/refresh" class="button">Refresh BGG data</a>
         </div>
     </div>
 

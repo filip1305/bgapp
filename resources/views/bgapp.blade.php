@@ -27,8 +27,18 @@
 				<li><a href="/user/view_me">My profile</a></li>
 			</ul>
 		</li>
-		<li class="right"><a href="/auth/logout">Logout</a></li>
+		<li class="right"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
 	</ul>
+
+	@if (count($errors) > 0)
+        <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <div class="notice error">
+                	<i class="fa fa-remove"></i>{{ $error }}
+				</div>
+            @endforeach
+        </div>
+    @endif
 
 	<div id="content">
 		@yield('content')

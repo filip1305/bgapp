@@ -13,6 +13,12 @@
         Email: {{ $user->email }}
     </div>
 
+    @if ($me == 1)
+        <div class="left">
+            <a href="/user/password" class="button small">Change password</a>
+        </div>
+    @endif
+
     <div class="col_6">
         <h5>Boardgames</h5>
 

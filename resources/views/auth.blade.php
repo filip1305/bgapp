@@ -18,6 +18,17 @@
 	@yield('scripts')
 </head>
 <body>
+
+	@if (count($errors) > 0)
+        <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <div class="notice error">
+                	<i class="fa fa-remove"></i>{{ $error }}
+				</div>
+            @endforeach
+        </div>
+    @endif
+
 	<div id="content">
 		@yield('content')
 	</div>
