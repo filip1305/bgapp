@@ -10,7 +10,7 @@
         Name: {{ $user->name }}
     <div>
     </div>
-        Email: {{ $user->email }}
+        Email: <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
     </div>
 
     @if ($me == 1)
