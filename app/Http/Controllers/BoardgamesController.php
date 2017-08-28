@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Boardgame;
+use App\Models\BoardgameCategory;
+use App\Models\BoardgameDesigner;
+use App\Models\BoardgamePublisher;
+use App\Models\Category;
+use App\Models\Designer;
+use App\Models\Publisher;
 use App\Models\UserBoardgame;
 use Auth;
 use Illuminate\Http\Request;
@@ -16,15 +22,24 @@ class BoardgamesController extends Controller
 		$name = '';
 		$players = '';
 		$type = 0;
+		$year = '';
+		$category = 0;
+		$publisher = 0;
 
 		$name = \Request::get('name');
 		$players = \Request::get('players');
 		$type = \Request::get('type');
+		$year = \Request::get('year');
+		$category = \Request::get('category');
+		$publisher = \Request::get('publisher');
 
 		$filters = [
 			'name' => $name,
 			'players' => $players,
-			'type' => $type
+			'type' => $type,
+			'year' => $year,
+			'category' => $category,
+			'publisher' => $publisher
 		];
 
 		$loged_user = Auth::user();
@@ -37,6 +52,10 @@ class BoardgamesController extends Controller
 		if (!empty($players)) {
 			$query = $query->where('minplayers', '<=', $players);
 			$query = $query->where('maxplayers', '>=', $players);
+		}
+
+		if (!empty($year)) {
+			$query = $query->where('yearpublished', $year);
 		}
 
 		if ($type == 1) {
@@ -52,12 +71,43 @@ class BoardgamesController extends Controller
 			$query = $query->whereIn('id', $ids);
 		}
 
+		if ($category > 0) {
+			$mappings = BoardgameCategory::where('category_id', $category)
+				->get();
+
+			$ids = [];
+
+			foreach ($mappings as $mapping) {
+				$ids[] = $mapping->boardgame_id;
+			}
+
+			$query = $query->whereIn('id', $ids);
+		}
+
+		if ($publisher > 0) {
+			$mappings = BoardgamePublisher::where('publisher_id', $publisher)
+				->get();
+
+			$ids = [];
+
+			foreach ($mappings as $mapping) {
+				$ids[] = $mapping->boardgame_id;
+			}
+
+			$query = $query->whereIn('id', $ids);
+		}
+
 		$boardgames = $query->get();
+
+		$publishers = Publisher::orderBy('name')->get();
+		$categories = Category::orderBy('name')->get();
 
 		return view('boardgames.index', array(
 			'boardgames' => $boardgames,
 			'filters' => $filters,
-			'admin' => $loged_user->admin
+			'admin' => $loged_user->admin,
+			'publishers' => $publishers,
+			'categories' => $categories
 		));
 	}
 
@@ -83,37 +133,31 @@ class BoardgamesController extends Controller
 			$bgg_id = (int)$link;
 		}
 
-		$boardgame->bgg_id = 0;
-		$boardgame->yearpublished = NULL;
-		$boardgame->minplayers = NULL;
-		$boardgame->maxplayers = NULL;
-		$boardgame->minplaytime = NULL;
-		$boardgame->maxplaytime = NULL;
-		$boardgame->description = NULL;
-		$boardgame->thumbnail = NULL;
-		$boardgame->image = NULL;
-		$boardgame->rank = 0;
+		$this->clearBggData($boardgame);
+
+		$publishers = [];
+		$categories = [];
+		$designers = [];
 
 		if ($bgg_id > 0) {
-			$bgg_date = $this->getDataFromBGG($bgg_id);
+			$bgg_data = $this->getDataFromBGG($bgg_id);
 
-			if (!empty($bgg_date)) {
-				$boardgame->bgg_id = $bgg_id;
-				$boardgame->yearpublished = $bgg_date['yearpublished'];
-				$boardgame->minplayers = $bgg_date['minplayers'];
-				$boardgame->maxplayers = $bgg_date['maxplayers'];
-				$boardgame->minplaytime = $bgg_date['minplaytime'];
-				$boardgame->maxplaytime = $bgg_date['maxplaytime'];
-				$boardgame->description = $bgg_date['description'];
-				$boardgame->thumbnail = $bgg_date['thumbnail'];
-				$boardgame->image = $bgg_date['image'];
+			$boardgame->bgg_id = $bgg_id;
 
-				if (count($bgg_date['statistics']['ratings']['ranks']['rank']) > 1) {
-					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
-				} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
-					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
-				} else {
-					$boardgame->rank = 0;
+			if (!empty($bgg_data)) {
+
+				$this->setBggData($boardgame, $bgg_data);
+
+				if (!empty($bgg_data['boardgamedesigner'])){
+					$designers = $bgg_data['boardgamedesigner'];
+				}
+				
+				if (!empty($bgg_data['boardgamepublisher'])){
+					$publishers = $bgg_data['boardgamepublisher'];
+				}
+
+				if (!empty($bgg_data['boardgamecategory'])){
+					$categories = $bgg_data['boardgamecategory'];
 				}
 
 				$this->validate($request, [
@@ -123,6 +167,10 @@ class BoardgamesController extends Controller
 		}
 
 		$boardgame->save();
+
+		$this->saveDesignerMappings($boardgame, $designers);
+		$this->saveCategoryMappings($boardgame, $categories);
+		$this->savePublisherMappings($boardgame, $publishers);
 
 		return redirect('/boardgames/');
 	}
@@ -150,37 +198,33 @@ class BoardgamesController extends Controller
 			$bgg_id = (int)$link;
 		}
 
-		$boardgame->bgg_id = 0;
-		$boardgame->yearpublished = NULL;
-		$boardgame->minplayers = NULL;
-		$boardgame->maxplayers = NULL;
-		$boardgame->minplaytime = NULL;
-		$boardgame->maxplaytime = NULL;
-		$boardgame->description = NULL;
-		$boardgame->thumbnail = NULL;
-		$boardgame->image = NULL;
-		$boardgame->rank = 0;
+		$this->clearBggData($boardgame);
+
+		$publishers = [];
+		$categories = [];
+		$designers = [];
+
+		$this->removeMappings($boardgame);
 
 		if ($bgg_id > 0) {
-			$bgg_date = $this->getDataFromBGG($bgg_id);
+			$bgg_data = $this->getDataFromBGG($bgg_id);
 
-			if (!empty($bgg_date)) {
-				$boardgame->bgg_id = $bgg_id;
-				$boardgame->yearpublished = $bgg_date['yearpublished'];
-				$boardgame->minplayers = $bgg_date['minplayers'];
-				$boardgame->maxplayers = $bgg_date['maxplayers'];
-				$boardgame->minplaytime = $bgg_date['minplaytime'];
-				$boardgame->maxplaytime = $bgg_date['maxplaytime'];
-				$boardgame->description = $bgg_date['description'];
-				$boardgame->thumbnail = $bgg_date['thumbnail'];
-				$boardgame->image = $bgg_date['image'];
+			$boardgame->bgg_id = $bgg_id;
+
+			if (!empty($bgg_data)) {
+
+				$this->setBggData($boardgame, $bgg_data);
+
+				if (!empty($bgg_data['boardgamedesigner'])){
+					$designers = $bgg_data['boardgamedesigner'];
+				}
 				
-				if (count($bgg_date['statistics']['ratings']['ranks']['rank']) > 1) {
-					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
-				} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
-					$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
-				} else {
-					$boardgame->rank = 0;
+				if (!empty($bgg_data['boardgamepublisher'])){
+					$publishers = $bgg_data['boardgamepublisher'];
+				}
+
+				if (!empty($bgg_data['boardgamecategory'])){
+					$categories = $bgg_data['boardgamecategory'];
 				}
 
 				$this->validate($request, [
@@ -190,6 +234,10 @@ class BoardgamesController extends Controller
 		}
 
 		$boardgame->save();
+
+		$this->saveDesignerMappings($boardgame, $designers);
+		$this->saveCategoryMappings($boardgame, $categories);
+		$this->savePublisherMappings($boardgame, $publishers);
 
 		return redirect('/boardgames/');
 	}
@@ -240,32 +288,172 @@ class BoardgamesController extends Controller
 		foreach ($boardgames as $boardgame) {
 
 			if ($boardgame->bgg_id > 0) {
-				$bgg_date = $this->getDataFromBGG($boardgame->bgg_id);
+				$bgg_data = $this->getDataFromBGG($boardgame->bgg_id);
 
-				if (!empty($bgg_date)) {
-					$boardgame->yearpublished = $bgg_date['yearpublished'];
-					$boardgame->minplayers = $bgg_date['minplayers'];
-					$boardgame->maxplayers = $bgg_date['maxplayers'];
-					$boardgame->minplaytime = $bgg_date['minplaytime'];
-					$boardgame->maxplaytime = $bgg_date['maxplaytime'];
-					$boardgame->description = $bgg_date['description'];
-					$boardgame->thumbnail = $bgg_date['thumbnail'];
-					$boardgame->image = $bgg_date['image'];
+				$publishers = [];
+				$categories = [];
+				$designers = [];
+
+				$this->removeMappings($boardgame);
+
+				if (!empty($bgg_data)) {
+					$this->setBggData($boardgame, $bgg_data);
+
+					if (!empty($bgg_data['boardgamedesigner'])){
+						$designers = $bgg_data['boardgamedesigner'];
+					}
 					
-					if (count($bgg_date['statistics']['ratings']['ranks']['rank']) > 1) {
-						$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
-					} elseif (count($bgg_date['statistics']['ratings']['ranks']['rank']) == 1) {
-						$boardgame->rank = $bgg_date['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
-					} else {
-						$boardgame->rank = 0;
+					if (!empty($bgg_data['boardgamepublisher'])){
+						$publishers = $bgg_data['boardgamepublisher'];
+					}
+
+					if (!empty($bgg_data['boardgamecategory'])){
+						$categories = $bgg_data['boardgamecategory'];
 					}
 				}
 
 				$boardgame->save();
+
+				$this->saveDesignerMappings($boardgame, $designers);
+				$this->saveCategoryMappings($boardgame, $categories);
+				$this->savePublisherMappings($boardgame, $publishers);
 			}
 
 		}
 
 	    return redirect('/boardgames/');
+	}
+
+	private function clearBggData(&$boardgame) {
+		$boardgame->bgg_id = 0;
+		$boardgame->yearpublished = NULL;
+		$boardgame->minplayers = NULL;
+		$boardgame->maxplayers = NULL;
+		$boardgame->minplaytime = NULL;
+		$boardgame->maxplaytime = NULL;
+		$boardgame->description = NULL;
+		$boardgame->thumbnail = NULL;
+		$boardgame->image = NULL;
+		$boardgame->rank = 0;
+	}
+
+	private function setBggData(&$boardgame, $bgg_data) {
+		$boardgame->yearpublished = $bgg_data['yearpublished'];
+		$boardgame->minplayers = $bgg_data['minplayers'];
+		$boardgame->maxplayers = $bgg_data['maxplayers'];
+		$boardgame->minplaytime = $bgg_data['minplaytime'];
+		$boardgame->maxplaytime = $bgg_data['maxplaytime'];
+		$boardgame->description = $bgg_data['description'];
+		$boardgame->thumbnail = $bgg_data['thumbnail'];
+		$boardgame->image = $bgg_data['image'];
+		
+		if (count($bgg_data['statistics']['ratings']['ranks']['rank']) > 1) {
+			$boardgame->rank = $bgg_data['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+		} elseif (count($bgg_data['statistics']['ratings']['ranks']['rank']) == 1) {
+			$boardgame->rank = $bgg_data['statistics']['ratings']['ranks']['rank']['@attributes']['value'];
+		} else {
+			$boardgame->rank = 0;
+		}
+	}
+
+	private function saveCategoryMappings(Boardgame $boardgame, $categories) {
+		if (!is_array($categories)) {
+			$categories = [$categories];
+		}
+
+		foreach ($categories as $category_name) {
+			$category = Category::where('name', $category_name)
+				->first();
+
+			if (count($category) == 0) {
+				$category = new Category;
+
+				$category->name = $category_name;
+
+				$category->save();
+			}
+
+			$mapping = new BoardgameCategory;
+
+			$mapping->boardgame_id = $boardgame->id;
+			$mapping->category_id = $category->id;
+
+			$mapping->save();
+		}
+	}
+
+	private function savePublisherMappings(Boardgame $boardgame, $publishers) {
+		if (!is_array($publishers)) {
+			$publishers = [$publishers];
+		}
+
+		foreach ($publishers as $publisher_name) {
+			$publisher = Publisher::where('name', $publisher_name)
+				->first();
+
+			if (count($publisher) == 0) {
+				$publisher = new Publisher;
+
+				$publisher->name = $publisher_name;
+
+				$publisher->save();
+			}
+
+			$mapping = new BoardgamePublisher;
+
+			$mapping->boardgame_id = $boardgame->id;
+			$mapping->publisher_id = $publisher->id;
+
+			$mapping->save();
+		}
+	}
+
+	private function saveDesignerMappings(Boardgame $boardgame, $designers) {
+		if (!is_array($designers)) {
+			$designers = [$designers];
+		}
+
+		foreach ($designers as $designer_name) {
+			$designer = Designer::where('name', $designer_name)
+				->first();
+
+			if (count($designer) == 0) {
+				$designer = new Designer;
+
+				$designer->name = $designer_name;
+
+				$designer->save();
+			}
+
+			$mapping = new BoardgameDesigner;
+
+			$mapping->boardgame_id = $boardgame->id;
+			$mapping->designer_id = $designer->id;
+
+			$mapping->save();
+		}
+	}
+
+	private function removeMappings(Boardgame $boardgame) {
+		$bg_categories = BoardgameCategory::where('boardgame_id', $boardgame->id)
+			->get();
+
+		foreach ($bg_categories as $bg_categorie) {
+			$bg_categorie->delete();
+		}
+
+		$bg_publishers = BoardgamePublisher::where('boardgame_id', $boardgame->id)
+			->get();
+
+		foreach ($bg_publishers as $bg_publisher) {
+			$bg_publisher->delete();
+		}
+
+		$bg_desigers = BoardgameDesigner::where('boardgame_id', $boardgame->id)
+			->get();
+
+		foreach ($bg_desigers as $bg_desiger) {
+			$bg_desiger->delete();
+		}
 	}
 }

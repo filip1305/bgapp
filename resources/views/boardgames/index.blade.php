@@ -20,6 +20,37 @@
             <form action="/boardgames" method="GET" class="form-horizontal">
                 <div class="input-group custom-search-form">
                     Name: <input type="text" class="form-control" name="name" placeholder="Name..." value="{{ $filters['name'] }}">
+                    Category:
+                    <select name="category">
+                        @if ($filters['category'] == 0)
+                            <option value="0" selected="selected">- All -</option>
+                        @else
+                            <option value="0">- All -</option>
+                        @endif
+                        @foreach ($categories as $category)
+                            @if ($category->id == $filters['category'])
+                                <option value="{{ $category->id }}" selected="selected">{{ $category->name }}</option>
+                            @else
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    Publisher:
+                    <select name="publisher">
+                        @if ($filters['publisher'] == 0)
+                            <option value="0" selected="selected">- All -</option>
+                        @else
+                            <option value="0">- All -</option>
+                        @endif
+                        @foreach ($publishers as $publisher)
+                            @if ($publisher->id == $filters['publisher'])
+                                <option value="{{ $publisher->id }}" selected="selected">{{ $publisher->name }}</option>
+                            @else
+                                <option value="{{ $publisher->id }}">{{ $publisher->name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    Type:
                     <select name="type">
                         @if ($filters['type'] == 0)
                             <option value="0" selected="selected">- All -</option>
@@ -29,7 +60,8 @@
                             <option value="1" selected="selected">Only mine</option>
                         @endif
                     </select>
-                    Players: <input type="text" class="form-control" name="players" placeholder="1" value="{{ $filters['players'] }}" style="width:50px;">
+                    Players: <input type="text" class="form-control" name="players" placeholder="#" value="{{ $filters['players'] }}" style="width:50px;">
+                    Year: <input type="text" class="form-control" name="year" placeholder="####" value="{{ $filters['year'] }}" style="width:50px;">
                     <span class="input-group-btn">
                         <button class="btn btn-default-sm" type="submit">
                             <i class="fa fa-search"></i>
@@ -77,6 +109,10 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    @else
+        <div class="center">
+            No data
         </div>
     @endif
 @stop

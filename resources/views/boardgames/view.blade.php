@@ -26,6 +26,30 @@
         <div class="col_3">Name:</div><div class="col_9">{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</div>
         <div class="col_3">Players:</div><div class="col_9">{{ $boardgame->minplayers }} - {{ $boardgame->maxplayers }}</div>
         <div class="col_3">Playing time:</div><div class="col_9">{{ $boardgame->minplaytime }} - {{ $boardgame->maxplaytime }} Min</div>
+
+        <div class="col_3">Categories:</div><div class="col_9">
+            <?php $string = ''; ?>
+            @foreach ($boardgame->categories as $category)
+                <?php $string .= $category->name . ', '; ?>
+            @endforeach
+            {{ substr($string, 0, -2) }}&nbsp;
+        </div>
+
+        <div class="col_3">Desinger:</div><div class="col_9">
+            <?php $string = ''; ?>
+            @foreach ($boardgame->designers as $designer)
+                <?php $string .= $designer->name . ', '; ?>
+            @endforeach
+            {{ substr($string, 0, -2) }}&nbsp;
+        </div>
+
+        <div class="col_3">Publishers:</div><div class="col_9">
+            <?php $string = ''; ?>
+            @foreach ($boardgame->publishers as $publisher)
+                <?php $string .= $publisher->name . ', '; ?>
+            @endforeach
+            {{ substr($string, 0, -2) }}&nbsp;
+        </div>
         
         <div class="col_9">
             <h5>Description:</h5>

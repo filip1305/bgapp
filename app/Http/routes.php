@@ -40,7 +40,6 @@ Route::group(['middleware' => 'auth'], function() {
 	    //return view('welcome');
 	});
 
-
 	// Boardgames
 	Route::get('boardgames', 'BoardgamesController@getBoardgames');
 	Route::get('boardgame/add', 'BoardgamesController@getNewBoardgame');

@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Boardgame;
 use App\Models\BoardgameExpansion;
+use App\Models\Category;
+use App\Models\Designer;
 use App\Models\Expansion;
+use App\Models\ExpansionCategory;
+use App\Models\ExpansionDesigner;
+use App\Models\ExpansionPublisher;
+use App\Models\Publisher;
 use Auth;
 use Illuminate\Http\Request;
 use Input;
@@ -56,31 +62,32 @@ class ExpansionsController extends Controller
 			$bgg_id = (int)$link;
 		}
 
-		$expansion->bgg_id = 0;
-		$expansion->yearpublished = NULL;
-		$expansion->minplayers = NULL;
-		$expansion->maxplayers = NULL;
-		$expansion->minplaytime = NULL;
-		$expansion->maxplaytime = NULL;
-		$expansion->description = NULL;
-		$expansion->thumbnail = NULL;
-		$expansion->image = NULL;
-		$expansion->rank = NULL;
+		$this->clearBggData($boardgame);
+
+		$publishers = [];
+		$categories = [];
+		$designers = [];
 
 		if ($bgg_id > 0) {
-			$bgg_date = $this->getDataFromBGG($bgg_id);
+			$bgg_data = $this->getDataFromBGG($bgg_id);
 
-			if (!empty($bgg_date)) {
-				$expansion->bgg_id = $bgg_id;
-				$expansion->yearpublished = $bgg_date['yearpublished'];
-				$expansion->minplayers = $bgg_date['minplayers'];
-				$expansion->maxplayers = $bgg_date['maxplayers'];
-				$expansion->minplaytime = $bgg_date['minplaytime'];
-				$expansion->maxplaytime = $bgg_date['maxplaytime'];
-				$expansion->description = $bgg_date['description'];
-				$expansion->thumbnail = $bgg_date['thumbnail'];
-				$expansion->image = $bgg_date['image'];
-				$expansion->rank = 0;//$bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+			$expansion->bgg_id = $bgg_id;
+
+			if (!empty($bgg_data)) {
+
+				$this->setBggData($expansion, $bgg_data);
+
+				if (!empty($bgg_data['boardgamedesigner'])){
+					$designers = $bgg_data['boardgamedesigner'];
+				}
+				
+				if (!empty($bgg_data['boardgamepublisher'])){
+					$publishers = $bgg_data['boardgamepublisher'];
+				}
+
+				if (!empty($bgg_data['boardgamecategory'])){
+					$categories = $bgg_data['boardgamecategory'];
+				}
 
 				$this->validate($request, [
 			        'bgg_link' => 'unique:expansions,bgg_link',
@@ -98,6 +105,10 @@ class ExpansionsController extends Controller
 
 			$mapping->save();
 		}
+
+		$this->saveDesignerMappings($expansion, $designers);
+		$this->saveCategoryMappings($expansion, $categories);
+		$this->savePublisherMappings($expansion, $publishers);
 
 		return redirect('/expansions/');
 	}
@@ -135,31 +146,34 @@ class ExpansionsController extends Controller
 			$bgg_id = (int)$link;
 		}
 
-		$expansion->bgg_id = 0;
-		$expansion->yearpublished = NULL;
-		$expansion->minplayers = NULL;
-		$expansion->maxplayers = NULL;
-		$expansion->minplaytime = NULL;
-		$expansion->maxplaytime = NULL;
-		$expansion->description = NULL;
-		$expansion->thumbnail = NULL;
-		$expansion->image = NULL;
-		$expansion->rank = NULL;
+		$this->clearBggData($expansion);
+
+		$publishers = [];
+		$categories = [];
+		$designers = [];
+
+		$this->removeMappings($expansion);
 
 		if ($bgg_id > 0) {
-			$bgg_date = $this->getDataFromBGG($bgg_id);
+			$bgg_data = $this->getDataFromBGG($bgg_id);
 
-			if (!empty($bgg_date)) {
-				$expansion->bgg_id = $bgg_id;
-				$expansion->yearpublished = $bgg_date['yearpublished'];
-				$expansion->minplayers = $bgg_date['minplayers'];
-				$expansion->maxplayers = $bgg_date['maxplayers'];
-				$expansion->minplaytime = $bgg_date['minplaytime'];
-				$expansion->maxplaytime = $bgg_date['maxplaytime'];
-				$expansion->description = $bgg_date['description'];
-				$expansion->thumbnail = $bgg_date['thumbnail'];
-				$expansion->image = $bgg_date['image'];
-				$expansion->rank = 0;//$bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+			$expansion->bgg_id = $bgg_id;
+
+			if (!empty($bgg_data)) {
+				
+				$this->setBggData($expansion, $bgg_data);
+
+				if (!empty($bgg_data['boardgamedesigner'])){
+					$designers = $bgg_data['boardgamedesigner'];
+				}
+				
+				if (!empty($bgg_data['boardgamepublisher'])){
+					$publishers = $bgg_data['boardgamepublisher'];
+				}
+
+				if (!empty($bgg_data['boardgamecategory'])){
+					$categories = $bgg_data['boardgamecategory'];
+				}
 
 				$this->validate($request, [
 			        'bgg_link' => 'unique:expansions,bgg_link' . $expansion->id,
@@ -183,6 +197,10 @@ class ExpansionsController extends Controller
 
 			$mapping->save();
 		}
+
+		$this->saveDesignerMappings($boardgame, $designers);
+		$this->saveCategoryMappings($boardgame, $categories);
+		$this->savePublisherMappings($boardgame, $publishers);
 
 		return redirect('/expansions/');
 	}
@@ -232,25 +250,165 @@ class ExpansionsController extends Controller
 		foreach ($expansions as $expansion) {
 
 			if ($expansion->bgg_id > 0) {
-				$bgg_date = $this->getDataFromBGG($expansion->bgg_id);
+				$bgg_data = $this->getDataFromBGG($expansion->bgg_id);
 
-				if (!empty($bgg_date)) {
-					$expansion->yearpublished = $bgg_date['yearpublished'];
-					$expansion->minplayers = $bgg_date['minplayers'];
-					$expansion->maxplayers = $bgg_date['maxplayers'];
-					$expansion->minplaytime = $bgg_date['minplaytime'];
-					$expansion->maxplaytime = $bgg_date['maxplaytime'];
-					$expansion->description = $bgg_date['description'];
-					$expansion->thumbnail = $bgg_date['thumbnail'];
-					$expansion->image = $bgg_date['image'];
-					$expansion->rank = 0;//$bgg_date['statistics']['ratings']['ranks']['rank'][0]['@attributes']['value'];
+				$publishers = [];
+				$categories = [];
+				$designers = [];
+
+				$this->removeMappings($expansion);
+
+				if (!empty($bgg_data)) {
+					$this->setBggData($expansion, $bgg_data);
+
+					if (!empty($bgg_data['boardgamedesigner'])){
+						$designers = $bgg_data['boardgamedesigner'];
+					}
+					
+					if (!empty($bgg_data['boardgamepublisher'])){
+						$publishers = $bgg_data['boardgamepublisher'];
+					}
+
+					if (!empty($bgg_data['boardgamecategory'])){
+						$categories = $bgg_data['boardgamecategory'];
+					}
 				}
 
 				$expansion->save();
+
+				$this->saveDesignerMappings($expansion, $designers);
+				$this->saveCategoryMappings($expansion, $categories);
+				$this->savePublisherMappings($expansion, $publishers);
 			}
 
 		}
 
 	    return redirect('/expansions/');
+	}
+
+	private function clearBggData(&$expansion) {
+		$expansion->bgg_id = 0;
+		$expansion->yearpublished = NULL;
+		$expansion->minplayers = NULL;
+		$expansion->maxplayers = NULL;
+		$expansion->minplaytime = NULL;
+		$expansion->maxplaytime = NULL;
+		$expansion->description = NULL;
+		$expansion->thumbnail = NULL;
+		$expansion->image = NULL;
+		$expansion->rank = 0;
+	}
+
+	private function setBggData(&$expansion, $bgg_data) {
+		$expansion->yearpublished = $bgg_data['yearpublished'];
+		$expansion->minplayers = $bgg_data['minplayers'];
+		$expansion->maxplayers = $bgg_data['maxplayers'];
+		$expansion->minplaytime = $bgg_data['minplaytime'];
+		$expansion->maxplaytime = $bgg_data['maxplaytime'];
+		$expansion->description = $bgg_data['description'];
+		$expansion->thumbnail = $bgg_data['thumbnail'];
+		$expansion->image = $bgg_data['image'];
+		$expansion->rank = 0;
+	}
+
+	private function saveCategoryMappings(Expansion $expansion, $categories) {
+		if (!is_array($categories)) {
+			$categories = [$categories];
+		}
+
+		foreach ($categories as $category_name) {
+			$category = Category::where('name', $category_name)
+				->first();
+
+			if (count($category) == 0) {
+				$category = new Category;
+
+				$category->name = $category_name;
+
+				$category->save();
+			}
+
+			$mapping = new expansionCategory;
+
+			$mapping->expansion_id = $expansion->id;
+			$mapping->category_id = $category->id;
+
+			$mapping->save();
+		}
+	}
+
+	private function savePublisherMappings(Expansion $expansion, $publishers) {
+		if (!is_array($publishers)) {
+			$publishers = [$publishers];
+		}
+
+		foreach ($publishers as $publisher_name) {
+			$publisher = Publisher::where('name', $publisher_name)
+				->first();
+
+			if (count($publisher) == 0) {
+				$publisher = new Publisher;
+
+				$publisher->name = $publisher_name;
+
+				$publisher->save();
+			}
+
+			$mapping = new expansionPublisher;
+
+			$mapping->expansion_id = $expansion->id;
+			$mapping->publisher_id = $publisher->id;
+
+			$mapping->save();
+		}
+	}
+
+	private function saveDesignerMappings(Expansion $expansion, $designers) {
+		if (!is_array($designers)) {
+			$designers = [$designers];
+		}
+
+		foreach ($designers as $designer_name) {
+			$designer = Designer::where('name', $designer_name)
+				->first();
+
+			if (count($designer) == 0) {
+				$designer = new Designer;
+
+				$designer->name = $designer_name;
+
+				$designer->save();
+			}
+
+			$mapping = new expansionDesigner;
+
+			$mapping->expansion_id = $expansion->id;
+			$mapping->designer_id = $designer->id;
+
+			$mapping->save();
+		}
+	}
+
+	private function removeMappings(Expansion $expansion) {
+		$bg_categories = ExpansionCategory::where('expansion_id', $expansion->id)
+			->get();
+
+		foreach ($bg_categories as $bg_categorie) {
+			$bg_categorie->delete();
+		}
+
+		$bg_publishers = ExpansionPublisher::where('expansion_id', $expansion->id)
+			->get();
+
+		foreach ($bg_publishers as $bg_publisher) {
+			$bg_publisher->delete();
+		}
+
+		$bg_desigers = ExpansionDesigner::where('expansion_id', $expansion->id)
+			->get();
+
+		foreach ($bg_desigers as $bg_desiger) {
+			$bg_desiger->delete();
+		}
 	}
 }

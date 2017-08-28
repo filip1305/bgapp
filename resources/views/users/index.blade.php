@@ -52,5 +52,10 @@
                 </table>
             </div>
         </div>
+    @else
+        <div class="center">
+            No data
+        </div>
     @endif
+
 @stop
