@@ -33,7 +33,7 @@
     @if (count($expansions) > 0)
         <div>
             <div>
-                <table class="striped">
+                <table class="striped" id="data">
 
                     <thead>
                         <th></th>
@@ -76,4 +76,14 @@
             No data
         </div>
     @endif
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#data').DataTable({
+                searching: false
+            });
+        });
+
+    </script>
 @stop

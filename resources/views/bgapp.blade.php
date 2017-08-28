@@ -9,11 +9,13 @@
 	<meta name="token" content="{{ Session::token() }}">
 
 	<link rel="stylesheet" href="{{ URL::asset('/kickstart/css/kickstart.css') }}">
+	<link rel="stylesheet" href="{{ URL::asset('/datatables/media/css/jquery.dataTables.min.css') }}">
 
 	@yield('styles')
 
 	<script type="text/javascript" src="{{ URL::asset('jquery.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('/kickstart/js/kickstart.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('/datatables/media/js/jquery.dataTables.min.js') }}"></script>
 
 	@yield('scripts')
 </head>

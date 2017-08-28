@@ -32,6 +32,31 @@
         </div>
         <div class="col_3">Players:</div><div class="col_9">{{ $expansion->minplayers }} - {{ $expansion->maxplayers }}</div>
         <div class="col_3">Playing time:</div><div class="col_9">{{ $expansion->minplaytime }} - {{ $expansion->maxplaytime }} Min</div>
+
+        <div class="col_3">Categories:</div><div class="col_9">
+            <?php $string = ''; ?>
+            @foreach ($expansion->categories as $category)
+                <?php $string .= $category->name . ', '; ?>
+            @endforeach
+            {{ substr($string, 0, -2) }}&nbsp;
+        </div>
+
+        <div class="col_3">Desinger:</div><div class="col_9">
+            <?php $string = ''; ?>
+            @foreach ($expansion->designers as $designer)
+                <?php $string .= $designer->name . ', '; ?>
+            @endforeach
+            {{ substr($string, 0, -2) }}&nbsp;
+        </div>
+
+        <div class="col_3">Publishers:</div><div class="col_9">
+            <?php $string = ''; ?>
+            @foreach ($expansion->publishers as $publisher)
+                <?php $string .= $publisher->name . ', '; ?>
+            @endforeach
+            {{ substr($string, 0, -2) }}&nbsp;
+        </div>
+
         <div class="clear"></div>
         <div class="col_9">
             <h5>Description:</h5>

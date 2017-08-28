@@ -76,7 +76,7 @@
     @if (count($boardgames) > 0)
         <div>
             <div>
-                <table class="striped">
+                <table class="striped" id="data">
 
                     <thead>
                         <th>BGG Rank</th>
@@ -91,7 +91,13 @@
                     <tbody>
                         @foreach ($boardgames as $boardgame)
                             <tr>
-                                <td>{{ $boardgame->rank }}</td>
+                                <td>
+                                    @if ($boardgame->rank == 0)
+                                        <span style="display:none">999999</span>0
+                                    @else
+                                        {{ $boardgame->rank }}
+                                    @endif
+                                </td>
                                 <td class="center"><img style="max-height: 50px; width: auto; " src="{{$boardgame->thumbnail}}" /></td>
                                 <td>
                                     <a href="/boardgame/view/{{ $boardgame->id }}">{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</a>
@@ -115,4 +121,14 @@
             No data
         </div>
     @endif
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#data').DataTable({
+                searching: false
+            });
+        });
+
+    </script>
 @stop
