@@ -126,7 +126,12 @@
 
         $(document).ready(function() {
             $('#data').DataTable({
-                searching: false
+                searching: false,
+                columnDefs: [
+                    { orderable: false, targets: 1 },
+                    { orderable: false, targets: 5 },
+                    { orderable: false, targets: 6 }
+                ]
             });
         });
 

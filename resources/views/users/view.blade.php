@@ -28,7 +28,7 @@
             </div>
         @endif
         @if (count($user->boardgames))
-            <table class="striped">
+            <table class="striped"  id="data_bg">
 
                 <thead>
                     <th></th>
@@ -68,7 +68,7 @@
             </div>
         @endif
         @if (count($user->expansions))        
-            <table class="striped">
+            <table class="striped"  id="data_ex">
 
                 <thead>
                     <th></th>
@@ -98,4 +98,28 @@
             </table>
         @endif
     </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#data_bg').DataTable({
+                searching: false,
+                order: [[ 1, "asc" ]],
+                columnDefs: [
+                    { orderable: false, targets: 0 },
+                    { orderable: false, targets: 4 }
+                ]
+            });
+
+            $('#data_ex').DataTable({
+                searching: false,
+                order: [[ 1, "asc" ]],
+                columnDefs: [
+                    { orderable: false, targets: 0 },
+                    { orderable: false, targets: 4 }
+                ]
+            });
+        });
+
+    </script>
 @stop

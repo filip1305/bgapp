@@ -34,7 +34,6 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Bg (exp)</th>
-                        <th>&nbsp;</th>
                     </thead>
 
                     <tbody>
@@ -45,7 +44,6 @@
                                 </td>
                                 <td><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></td>
                                 <td>{{ count($user->boardgames) }} ({{ count($user->expansions) }})</td>
-                                <td></td>
                             </tr>
                         @endforeach
                     </tbody>

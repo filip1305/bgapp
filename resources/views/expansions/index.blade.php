@@ -81,7 +81,13 @@
 
         $(document).ready(function() {
             $('#data').DataTable({
-                searching: false
+                searching: false,
+                order: [[ 1, "asc" ]],
+                columnDefs: [
+                    { orderable: false, targets: 0 },
+                    { orderable: false, targets: 5 },
+                    { orderable: false, targets: 6 }
+                ]
             });
         });
 
