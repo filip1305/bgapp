@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'bgapp@idna.in.rs', 'name' => 'IDNA Boardgame App'],
 
     /*
     |--------------------------------------------------------------------------

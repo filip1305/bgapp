@@ -1,25 +1,25 @@
 @extends('bgapp')
 
 @section('content')
-    <ul class="breadcrumbs">
-        <li><a href="/users/">Users</a></li>
-        <li><a href="/user/view/{{ $user->id }}">{{ $user->name }}</a></li>
-        <li class="last"><a href="" onclick="return false">Add new expansion to collection</a></li>
-    </ul>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/users/">Users</a></li>
+        <li class="breadcrumb-item"><a href="/user/view/{{ Auth::user()->id }}">{{ Auth::user()->name }}</a></li>
+        <li class="breadcrumb-item active">Add expansion to collection</li>
+    </ol>
 
-    <div class="center">
+    <div class="text-center">
 
-        <div class="center">
-            <h3>Add new expansion to collection</h3>
+        <div class="text-center">
+            <h3>Add expansion to collection</h3>
         </div>
         
-        <form action="/user/expansion/add" method="POST" class="form-horizontal">
+        <form action="/user/expansion/add" method="POST">
             {{ csrf_field() }}
 
-            <div>
+            <div class="form-group">
                 <label>Expansion</label>
                 <div>
-                    <select name="expansion" style="width:350px;">
+                    <select name="expansion" style="width:400px;">
                         @foreach ($expansions as $expansion)
                             <option value="{{ $expansion->id }}">{{ $expansion->name }}</option>
                         @endforeach
@@ -27,13 +27,7 @@
                 </div>
             </div>
 
-            <div>
-                <div>
-                    <button type="submit">
-                        Save
-                    </button>
-                </div>
-            </div>
+            <button type="submit" class="btn btn-default">Save</button>
         </form>
     </div>
 @stop

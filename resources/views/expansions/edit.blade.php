@@ -1,29 +1,31 @@
 @extends('bgapp')
 
 @section('content')
-    <ul class="breadcrumbs">
-        <li><a href="/expansions/">Expansions</a></li>
-        <li class="last"><a href="" onclick="return false">Edit expansion</a></li>
-    </ul>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/expansions/">Expansions</a></li>
+        <li class="breadcrumb-item active">Edit new expansion</li>
+    </ol>
 
-    <div class="center">
+    <div class="text-center">
 
-        <div class="center">
+        <div class="text-center">
             <h3>Edit expansion</h3>
         </div>
 
-        <form action="/expansion/edit/{{$expansion->id}}" method="POST" class="form-horizontal">
+        <form action="/expansion/edit/{{$expansion->id}}" method="POST">
             {{ csrf_field() }}
 
-            <div>
+            <div class="form-group">
                 <label>Name</label>
                 <div>
-                    <input type="text" name="name" value="{{$expansion->name}}" style="width:350px;">
+                    <input type="text" name="name" value="{{$expansion->name}}" style="width:400px;">
                 </div>
+            </div>
 
+            <div class="form-group">
                 <label>Boardgames</label>
                 <div>
-                    <select name="boardgames[]" multiple="multiple" style="width:350px;">
+                    <select name="boardgames[]" multiple="multiple" style="width:400px;">
                         @foreach ($boardgames as $boardgame)
                             @if (in_array($boardgame->id, $selected))
                                 <option value="{{ $boardgame->id }}" selected="selected">{{ $boardgame->name }}</option>
@@ -33,20 +35,16 @@
                         @endforeach
                     </select>
                 </div>
+            </div>
 
-                <label>BGG Link</label>
+            <div class="form-group">
+                <label>BoardGameGeek Link</label>
                 <div>
-                    <input type="text" name="bgg_link" value="{{$expansion->bgg_link}}" style="width:350px;">
+                    <input type="text" name="bgg_link" value="{{$expansion->bgg_link}}" style="width:400px;">
                 </div>
             </div>
 
-            <div>
-                <div>
-                    <button type="submit">
-                        Save
-                    </button>
-                </div>
-            </div>
+            <button type="submit" class="btn btn-default">Save</button>
         </form>
     </div>
 @stop

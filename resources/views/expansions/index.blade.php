@@ -1,78 +1,77 @@
 @extends('bgapp')
 
 @section('content')
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Expansions</li>
+    </ol>
 
-    <ul class="breadcrumbs">
-        <li class="last"><a href="" onclick="return false">Expansions</a></li>
-    </ul>
+    <div class="text-center">
+        <h2>Expansions</h2>
+    </div>
 
-    <div>
-        <div class="center">
-            <h3>Expansions</h3>
-        </div>
-
-        <div class="right">
-            <a href="/expansion/add" class="button">Add new expansion</a>
+    <div class="text-right">
+        <div class="form-group">
+            <a href="/expansion/add" class="btn btn-default">Add new expansion</a>
             @if ($admin == 1)
-                <a href="/expansion/refresh" class="button">Refresh BGG data</a>
+                <a href="/expansion/refresh" class="btn btn-default">Refresh BGG data</a>
             @endif
-            
-            <form action="/expansions" method="GET" class="form-horizontal">
-                <div class="input-group custom-search-form">
-                    <input type="text" class="form-control" name="search" placeholder="Search..." value="{{$search}}">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default-sm" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </span>
-                </div>
-            </form>
         </div>
+        
+        <form action="/expansions" method="GET" class="form-inline">
+            <div class="form-group">
+                Name:
+                <input type="text" class="form-control" name="name" placeholder="Name..." value="{{ $search }}">
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-default" type="submit"><i class="fa fa-search fa-fw"></i></button>
+                <a href="/expansions" class="btn btn-default">Clear</a>
+            </div>
+        </form>
     </div>
 
     @if (count($expansions) > 0)
-        <div>
-            <div>
-                <table class="striped" id="data">
+        <table class="hover" id="data">
 
-                    <thead>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Boardgames</th>
-                        <th>Players</th>
-                        <th>Playing time [minutes]</th>
-                        <th>BGG link</th>
-                        <th>&nbsp;</th>
-                    </thead>
+            <thead>
+                <th width="100"></th>
+                <th>Name</th>
+                <th>Boardgames</th>
+                <th width="80">Players</th>
+                <th width="200">Playing time [minutes]</th>
+                <th width="100">&nbsp;</th>
+            </thead>
 
-                    <tbody>
-                        @foreach ($expansions as $expansion)
-                            <tr>
-                                <td class="center"><img style="max-height: 50px; width: auto; " src="{{$expansion->thumbnail}}" /></td>
-                                <td>
-                                    <a href="/expansion/view/{{ $expansion->id }}">{{ $expansion->name }} ({{ $expansion->yearpublished }})</a>
-                                </td>
-                                <td>
-                                    @foreach ($expansion->boardgames as $boardgame)
-                                        <a href="/boardgame/view/{{ $boardgame->id }}">{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</a>&nbsp;
-                                    @endforeach
-                                </td>
-                                <td>{{ $expansion->minplayers }} - {{ $expansion->maxplayers }}</td>
-                                <td>{{ $expansion->minplaytime }} - {{ $expansion->maxplaytime }}</td>
-                                <td>
-                                    @if (!empty($expansion->bgg_link))
-                                        <a href="{{ $expansion->bgg_link }}" target="_blank">BGG link</a>
-                                    @endif
-                                </td>
-                                <td><a href="/expansion/edit/{{ $expansion->id }}">Edit</a></td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            <tbody>
+                @foreach ($expansions as $expansion)
+                    <tr>
+                        <td class="text-center"><img style="max-height: 50px; width: auto; " src="{{$expansion->thumbnail}}" /></td>
+                        <td>
+                            <a href="/expansion/view/{{ $expansion->id }}">{{ $expansion->name }} ({{ $expansion->yearpublished }})</a>
+                        </td>
+                        <td>
+                            @foreach ($expansion->boardgames as $boardgame)
+                                <a href="/boardgame/view/{{ $boardgame->id }}">{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</a>&nbsp;
+                            @endforeach
+                        </td>
+                        <td>{{ $expansion->minplayers }} - {{ $expansion->maxplayers }}</td>
+                        <td>{{ $expansion->minplaytime }} - {{ $expansion->maxplaytime }}</td>
+                        <td class="text-right">
+                            <div class="btn-group">
+                                @if (!empty($boardgame->bgg_link))
+                                    <a href="{{ $expansion->bgg_link }}" class="btn btn-default" target="_blank"><i class="fa fa-link fa-fw"></i></a>
+                                @endif
+                                @if ($admin == 1)
+                                    <a href="/expansion/edit/{{ $expansion->id }}" class="btn btn-default"><i class="fa fa-edit fa-fw"></i></a>
+                                @endif
+                            </div> 
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     @else
-        <div class="center">
+        <div class="text-center">
             No data
         </div>
     @endif
@@ -85,8 +84,7 @@
                 order: [[ 1, "asc" ]],
                 columnDefs: [
                     { orderable: false, targets: 0 },
-                    { orderable: false, targets: 5 },
-                    { orderable: false, targets: 6 }
+                    { orderable: false, targets: 5 }
                 ]
             });
         });

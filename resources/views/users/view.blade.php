@@ -1,34 +1,32 @@
 @extends('bgapp')
 
 @section('content')
-    <ul class="breadcrumbs">
-        <li><a href="/users/">Users</a></li>
-        <li class="last"><a href="" onclick="return false">{{ $user->name }}</a></li>
-    </ul>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/users/">Users</a></li>
+        <li class="breadcrumb-item active">{{ $user->name }}</li>
+    </ol>
 
-    <div>
-        Name: {{ $user->name }}
-    <div>
-    </div>
-        Email: <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
-    </div>
-
-    @if ($me == 1)
-        <div class="left">
-            <a href="/user/password" class="button small">Change password</a>
+    <div class="col-sm-12">
+        <div>
+            Name: {{ $user->name }}
+        <div>
         </div>
-    @endif
-
-    <div class="col_6">
-        <h5>Boardgames</h5>
+            Email: <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
+        </div>
 
         @if ($me == 1)
-            <div class="left">
-                <a href="/user/boardgame/add" class="button small">Add</a>
-            </div>
+            <a href="/user/password" class="btn btn-default btn-sm">Change password</a>
+        @endif
+    </div>
+
+    <div class="col-sm-6">
+        <h4>Boardgames</h4>
+
+        @if ($me == 1)
+            <a href="/user/boardgame/add" class="btn btn-default btn-sm">Add</a>
         @endif
         @if (count($user->boardgames))
-            <table class="striped"  id="data_bg">
+            <table class="hover"  id="data_bg">
 
                 <thead>
                     <th></th>
@@ -41,7 +39,7 @@
                 <tbody>
                     @foreach ($user->boardgames as $boardgame)
                         <tr>
-                            <td class="center"><img style="max-height: 50px; width: auto; " src="{{$boardgame->thumbnail}}" /></td>
+                            <td class="text-center"><img style="max-height: 50px; width: auto; " src="{{$boardgame->thumbnail}}" /></td>
                             <td>
                                 <a href="/boardgame/view/{{ $boardgame->id }}">{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</a>
                             </td>
@@ -49,7 +47,7 @@
                             <td>{{ $boardgame->minplaytime }} - {{ $boardgame->maxplaytime }}</td>
                             <td>
                                 @if ($me == 1)
-                                    <a href="/user/boardgame/delete/{{ $boardgame->id }}" class="button" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></a>
+                                    <a href="/user/boardgame/delete/{{ $boardgame->id }}" class="btn btn-default btn-sm" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></a>
                                 @endif
                             </td>
                         </tr>
@@ -59,16 +57,14 @@
         @endif
     </div>
     
-    <div class="col_6">
-        <h5>Expansions</h5>
+    <div class="col-sm-6">
+        <h4>Expansions</h4>
 
         @if ($me == 1)
-            <div class="left">
-                <a href="/user/expansion/add" class="button small">Add</a>
-            </div>
+            <a href="/user/expansion/add" class="btn btn-default btn-sm">Add</a>
         @endif
         @if (count($user->expansions))        
-            <table class="striped"  id="data_ex">
+            <table class="hover"  id="data_ex">
 
                 <thead>
                     <th></th>
@@ -81,7 +77,7 @@
                 <tbody>
                     @foreach ($user->expansions as $expansion)
                         <tr>
-                            <td class="center"><img style="max-height: 50px; width: auto; " src="{{$expansion->thumbnail}}" /></td>
+                            <td class="text-center"><img style="max-height: 50px; width: auto; " src="{{$expansion->thumbnail}}" /></td>
                             <td>
                                 <a href="/expansion/view/{{ $expansion->id }}">{{ $expansion->name }} ({{ $expansion->yearpublished }})</a>
                             </td>
@@ -89,7 +85,7 @@
                             <td>{{ $expansion->minplaytime }} - {{ $expansion->maxplaytime }}</td>
                             <td>
                                 @if ($me == 1)
-                                    <a href="/user/expansion/delete/{{ $expansion->id }}" class="button" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></a>
+                                    <a href="/user/expansion/delete/{{ $expansion->id }}" class="btn btn-default btn-sm" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></a>
                                 @endif
                             </td>
                         </tr>
