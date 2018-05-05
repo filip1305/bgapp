@@ -1,25 +1,25 @@
 @extends('bgapp')
 
 @section('content')
-    <ul class="breadcrumbs">
-        <li><a href="/users/">Users</a></li>
-        <li><a href="/user/view/{{ $user->id }}">{{ $user->name }}</a></li>
-        <li class="last"><a href="" onclick="return false">Add new boardgame to collection</a></li>
-    </ul>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/users/">Users</a></li>
+        <li class="breadcrumb-item"><a href="/user/view/{{ Auth::user()->id }}">{{ Auth::user()->name }}</a></li>
+        <li class="breadcrumb-item active">Add boardgame to collection</li>
+    </ol>
 
-    <div class="center">
+    <div class="text-center">
 
-        <div class="center">
-            <h3>Add new boardgame to collection</h3>
+        <div class="text-center">
+            <h3>Add boardgame to collection</h3>
         </div>
         
-        <form action="/user/boardgame/add" method="POST" class="form-horizontal">
+        <form action="/user/boardgame/add" method="POST">
             {{ csrf_field() }}
 
-            <div>
+            <div class="form-group">
                 <label>Boardgame</label>
                 <div>
-                    <select name="boardgame" style="width:350px;">
+                    <select name="boardgame" style="width:400px;">
                         @foreach ($boardgames as $boardgame)
                             <option value="{{ $boardgame->id }}">{{ $boardgame->name }}</option>
                         @endforeach
@@ -27,13 +27,7 @@
                 </div>
             </div>
 
-            <div>
-                <div>
-                    <button type="submit">
-                        Save
-                    </button>
-                </div>
-            </div>
+            <button type="submit" class="btn btn-default">Save</button>
         </form>
     </div>
 @stop

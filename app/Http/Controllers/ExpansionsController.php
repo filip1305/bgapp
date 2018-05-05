@@ -62,7 +62,7 @@ class ExpansionsController extends Controller
 			$bgg_id = (int)$link;
 		}
 
-		$this->clearBggData($boardgame);
+		$this->clearBggData($expansion);
 
 		$publishers = [];
 		$categories = [];
@@ -198,9 +198,9 @@ class ExpansionsController extends Controller
 			$mapping->save();
 		}
 
-		$this->saveDesignerMappings($boardgame, $designers);
-		$this->saveCategoryMappings($boardgame, $categories);
-		$this->savePublisherMappings($boardgame, $publishers);
+		$this->saveDesignerMappings($expansion, $designers);
+		$this->saveCategoryMappings($expansion, $categories);
+		$this->savePublisherMappings($expansion, $publishers);
 
 		return redirect('/expansions/');
 	}

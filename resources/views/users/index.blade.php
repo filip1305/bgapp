@@ -1,57 +1,51 @@
 @extends('bgapp')
 
 @section('content')
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Users</li>
+    </ol>
 
-    <ul class="breadcrumbs">
-        <li class="last"><a href="" onclick="return false">Users</a></li>
-    </ul>
+    <div class="text-center">
+        <h2>Users</h2>
+    </div>
 
-    <div>
-        <div class="center">
-            <h3>Users</h3>
-        </div>
+    <div class="text-right">        
+        <form action="/users" method="GET" class="form-inline">
+            <div class="form-group">
+                Name:
+                <input type="text" class="form-control" name="name" placeholder="Name..." value="{{ $search }}">
+            </div>
 
-        <div class="right">
-            <form action="/users" method="GET" class="form-horizontal">
-                <div class="input-group custom-search-form">
-                    <input type="text" class="form-control" name="search" placeholder="Search..." value="{{$search}}">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default-sm" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </span>
-                </div>
-            </form>
-        </div>
+            <div class="form-group">
+                <button class="btn btn-default" type="submit"><i class="fa fa-search fa-fw"></i></button>
+                <a href="/users" class="btn btn-default">Clear</a>
+            </div>
+        </form>
     </div>
 
     @if (count($users) > 0)
-        <div>
-            <div>
-                <table class="striped" id="data">
+        <table class="hover" id="data">
 
-                    <thead>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Bg (exp)</th>
-                    </thead>
+            <thead>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Bg (exp)</th>
+            </thead>
 
-                    <tbody>
-                        @foreach ($users as $user)
-                            <tr>
-                                <td>
-                                    <a href="/user/view/{{ $user->id }}">{{ $user->name }}</a>
-                                </td>
-                                <td><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></td>
-                                <td>{{ count($user->boardgames) }} ({{ count($user->expansions) }})</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            <tbody>
+                @foreach ($users as $user)
+                    <tr>
+                        <td>
+                            <a href="/user/view/{{ $user->id }}">{{ $user->name }}</a>
+                        </td>
+                        <td><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></td>
+                        <td>{{ count($user->boardgames) }} ({{ count($user->expansions) }})</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     @else
-        <div class="center">
+        <div class="text-center">
             No data
         </div>
     @endif

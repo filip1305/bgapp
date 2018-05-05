@@ -1,39 +1,35 @@
 @extends('bgapp')
 
 @section('content')
-    <ul class="breadcrumbs">
-        <li><a href="/boardgames/">Boardgames</a></li>
-        <li class="last"><a href="" onclick="return false">Edit boardgame</a></li>
-    </ul>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/boardgames/">Boardgames</a></li>
+        <li class="breadcrumb-item active">Edit boardgame</li>
+    </ol>
 
-    <div class="center">
+    <div class="text-center">
 
-        <div class="center">
+        <div class="text-center">
             <h3>Edit boardgame</h3>
         </div>
 
         <form action="/boardgame/edit/{{$boardgame->id}}" method="POST" class="form-horizontal">
             {{ csrf_field() }}
 
-            <div>
+            <div class="form-group">
                 <label>Name</label>
                 <div>
-                    <input type="text" name="name" value="{{$boardgame->name}}" style="width:350px;">
-                </div>
-
-                <label>BGG Link</label>
-                <div>
-                    <input type="text" name="bgg_link" value="{{$boardgame->bgg_link}}" style="width:350px;">
+                    <input type="text" name="name" value="{{$boardgame->name}}" style="width:400px;">
                 </div>
             </div>
 
-            <div>
+            <div class="form-group">
+                <label>BoardGameGeek Link</label>
                 <div>
-                    <button type="submit">
-                        Save
-                    </button>
+                    <input type="text" name="bgg_link" value="{{$boardgame->bgg_link}}" style="width:400px;">
                 </div>
             </div>
+
+            <button type="submit" class="btn btn-default">Save</button>
         </form>
     </div>
 @stop

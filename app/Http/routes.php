@@ -34,9 +34,17 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 Route::get('auth/register', 'Auth\AuthController@getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
+// Forgot password...
+Route::get('auth/identify', 'Auth\AuthController@getForgotPass');
+Route::post('auth/identify', 'Auth\AuthController@postForgotPass');
+Route::get('auth/recover/{code}', 'Auth\AuthController@getResetPass');
+Route::post('auth/recover', 'Auth\AuthController@postResetPass');
+
+Route::get('auth/activate/{code}', 'Auth\AuthController@activateAccount');
+
 Route::group(['middleware' => 'auth'], function() {
 	Route::get('/', function () {
-		return redirect('/boardgames/');
+		return redirect('boardgames/');
 	    //return view('welcome');
 	});
 

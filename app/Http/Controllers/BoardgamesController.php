@@ -13,6 +13,7 @@ use App\Models\UserBoardgame;
 use Auth;
 use Illuminate\Http\Request;
 use Input;
+use Mail;
 
 class BoardgamesController extends Controller
 {
@@ -41,7 +42,11 @@ class BoardgamesController extends Controller
 			'category' => $category,
 			'publisher' => $publisher
 		];
-
+/*
+		Mail::send('emails.test', [], function ($m) use ($name) {
+            $m->to('filipb1986@gmail.com', 'Filip')->subject('Test');
+        });
+*/
 		$loged_user = Auth::user();
 
 		$query = Boardgame::query();
