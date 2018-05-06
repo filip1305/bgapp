@@ -21,7 +21,7 @@ class ExpansionsController extends Controller
 	public function getExpansions()
 	{
 		$search = '';
-		$search = \Request::get('search');
+		$search = \Request::get('name');
 
 		$expansions = Expansion::where('name','like','%'.$search.'%')
 			->orderBy('name', 'asc')

@@ -6,6 +6,7 @@ use App\Models\Boardgame;
 use App\Models\BoardgameCategory;
 use App\Models\BoardgameDesigner;
 use App\Models\BoardgamePublisher;
+use App\Models\BoardgameRating;
 use App\Models\Category;
 use App\Models\Designer;
 use App\Models\Publisher;
@@ -460,5 +461,27 @@ class BoardgamesController extends Controller
 		foreach ($bg_desigers as $bg_desiger) {
 			$bg_desiger->delete();
 		}
+	}
+
+	public function rateBg(Boardgame $boardgame, Request $request) {
+		$rating = Input::get('rating');
+
+		$loged_user = Auth::user();
+
+		$boardgameRating = BoardgameRating::where('boardgame_id', $boardgame->id)
+			->where('user_id', $loged_user->id)
+			->first();
+
+		if (!$boardgameRating) {
+			$boardgameRating = new BoardgameRating;
+		}
+		
+		$boardgameRating->boardgame_id = $boardgame->id;
+		$boardgameRating->user_id = $loged_user->id;
+		$boardgameRating->rating = $rating;
+
+		$boardgameRating->save();
+
+		return redirect('/boardgame/view/' . $boardgame->id);
 	}
 }

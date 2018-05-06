@@ -26,8 +26,36 @@
 
     <div class="col-sm-9">
         <div class="row">
+            <div class="col-sm-2"><strong>Rating:</strong></div>
+            <div class="col-sm-10">
+                <form action="/boardgame/rating/{{$boardgame->id}}" method="POST">
+                    {{ csrf_field() }}
+
+                    @for ($i = 1; $i <= 10; $i++)
+                        @if ($boardgame->myRating() == $i)
+                            <label class="radio-inline">
+                                <input type="radio" name="rating" id="{{ $i }}" value="{{ $i }}" checked>{{ $i }}
+                            </label>
+                        @else
+                            <label class="radio-inline">
+                                <input type="radio" name="rating" id="{{ $i }}" value="{{ $i }}">{{ $i }}
+                            </label>
+                        @endif
+                    @endfor
+
+                    <button type="submit" class="btn btn-default">Rate</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-sm-2"><strong>Name:</strong></div>
             <div class="col-sm-10">{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2"><strong>Avg Rating:</strong></div>
+            <div class="col-sm-10">{{ round($boardgame->avgRating(), 2) }}</div>
         </div>
 
         <div class="row">
@@ -68,6 +96,17 @@
                 <?php $string = ''; ?>
                 @foreach ($boardgame->publishers as $publisher)
                     <?php $string .= $publisher->name . ', '; ?>
+                @endforeach
+                {{ substr($string, 0, -2) }}&nbsp;
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2"><strong>Owners:</strong></div>
+            <div class="col-sm-10">
+                <?php $string = ''; ?>
+                @foreach ($boardgame->users as $user)
+                    <a href="/user/view/{{ $user->id }}">{{ $user->name }}</a>
                 @endforeach
                 {{ substr($string, 0, -2) }}&nbsp;
             </div>
