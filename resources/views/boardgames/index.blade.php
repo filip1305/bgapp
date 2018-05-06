@@ -93,7 +93,8 @@
         <table class="hover" id="data">
 
             <thead>
-                <th width="50">BGG Rank</th>
+                <th width="70">Avg Rating</th>
+                <th width="70">My Rating</th>
                 <th width="100"></th>
                 <th>Name</th>
                 <th width="80">Players</th>
@@ -105,10 +106,17 @@
                 @foreach ($boardgames as $boardgame)
                     <tr>
                         <td>
-                            @if ($boardgame->rank == 0)
-                                <span style="display:none">999999</span>0
+                            @if ($boardgame->avgRating())
+                                {{ round($boardgame->avgRating(), 2) }}
                             @else
-                                {{ $boardgame->rank }}
+                                <span style="display:none">0</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if ($boardgame->myRating())
+                                {{ $boardgame->myRating() }}
+                            @else
+                                <span style="display:none">0</span>
                             @endif
                         </td>
                         <td class="text-center"><img style="max-height: 50px; width: auto; " src="{{$boardgame->thumbnail}}" /></td>
@@ -142,9 +150,10 @@
         $(document).ready(function() {
             $('#data').DataTable({
                 searching: false,
+                order: [[ 0, "desc" ]],
                 columnDefs: [
-                    { orderable: false, targets: 1 },
-                    { orderable: false, targets: 5 }
+                    { orderable: false, targets: 2 },
+                    { orderable: false, targets: 6 }
                 ]
             });
         });

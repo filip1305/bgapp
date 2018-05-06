@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth'], function() {
 	
 	Route::post('boardgame/add', 'BoardgamesController@postNewBoardgame');
 	Route::post('boardgame/edit/{boardgame}', 'BoardgamesController@postUpdateBoardgame');
+	Route::post('boardgame/rating/{boardgame}', 'BoardgamesController@rateBg');
 
 	// Expansions
 	Route::get('expansions', 'ExpansionsController@getExpansions');
