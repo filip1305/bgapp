@@ -14,6 +14,7 @@ use App\Models\Publisher;
 use Auth;
 use Illuminate\Http\Request;
 use Input;
+use Validator;
 
 class ExpansionsController extends Controller
 {
@@ -47,6 +48,20 @@ class ExpansionsController extends Controller
 
 	public function postNewExpansion(Request $request)
 	{
+		$rules = array(
+			'name' => 'required|max:255',
+			'bgg_link' => 'required|max:255'
+		);
+
+		$validator = Validator::make(Input::all(), $rules);
+		
+		if ($validator->fails())
+		{
+			$this->throwValidationException(
+				$request, $validator
+			);
+		}
+
 		$expansion = new Expansion;
 		$expansion->name = trim(Input::get('name'));
 		$expansion->bgg_link = trim(Input::get('bgg_link'));
@@ -56,6 +71,13 @@ class ExpansionsController extends Controller
 		if (strpos($expansion->bgg_link, 'boardgamegeek.com/boardgameexpansion') > 0) {
 
 			$link = str_replace("https://boardgamegeek.com/boardgameexpansion","",$expansion->bgg_link);
+
+			$link = substr($link, strpos($link, '/') + 1);
+
+			$bgg_id = (int)$link;
+		} elseif (strpos($expansion->bgg_link, 'boardgamegeek.com/boardgame') > 0) {
+
+			$link = str_replace("https://boardgamegeek.com/boardgame","",$expansion->bgg_link);
 
 			$link = substr($link, strpos($link, '/') + 1);
 
@@ -132,6 +154,20 @@ class ExpansionsController extends Controller
 
 	public function postUpdateExpansion(Expansion $expansion, Request $request)
 	{
+		$rules = array(
+			'name' => 'required|max:255',
+			'bgg_link' => 'required|max:255'
+		);
+
+		$validator = Validator::make(Input::all(), $rules);
+		
+		if ($validator->fails())
+		{
+			$this->throwValidationException(
+				$request, $validator
+			);
+		}
+
 		$expansion->name = trim(Input::get('name'));
 		$expansion->bgg_link = trim(Input::get('bgg_link'));
 		

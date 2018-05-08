@@ -72,7 +72,7 @@
         </table>
     @else
         <div class="text-center">
-            No data
+            <h4>There are no results that match your search<h4>
         </div>
     @endif
 
@@ -82,6 +82,7 @@
             $('#data').DataTable({
                 searching: false,
                 order: [[ 1, "asc" ]],
+                pageLength: 25,
                 columnDefs: [
                     { orderable: false, targets: 0 },
                     { orderable: false, targets: 5 }

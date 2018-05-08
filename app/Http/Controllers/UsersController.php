@@ -158,7 +158,7 @@ class UsersController extends Controller
 		$loged_user = Auth::user();
 
 		$this->validate($request, [
-	        'new_password' => 'required|min:8',
+	        'new_password' => 'required|confirmed|min:6|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/',
 	    ]);
 
 		if ((Hash::check(Input::get('old_password'), $loged_user->password)) && (Input::get('new_password') == Input::get('password_confirmation'))) {
