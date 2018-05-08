@@ -81,6 +81,17 @@
         </div>
 
         <div class="row">
+            <div class="col-sm-2"><strong>Owners:</strong></div>
+            <div class="col-sm-10">
+                <?php $string = ''; ?>
+                @foreach ($expansion->users as $user)
+                    <a href="/user/view/{{ $user->id }}">{{ $user->name }}</a>
+                @endforeach
+                {{ substr($string, 0, -2) }}&nbsp;
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-sm-9">
                 <h5><strong>Description:</strong></h5>
                 <?php echo $expansion->description; ?>

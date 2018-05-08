@@ -15,6 +15,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Input;
 use Mail;
+use Validator;
 
 class BoardgamesController extends Controller
 {
@@ -43,11 +44,7 @@ class BoardgamesController extends Controller
 			'category' => $category,
 			'publisher' => $publisher
 		];
-/*
-		Mail::send('emails.test', [], function ($m) use ($name) {
-            $m->to('filipb1986@gmail.com', 'Filip')->subject('Test');
-        });
-*/
+
 		$loged_user = Auth::user();
 
 		$query = Boardgame::query();
@@ -124,6 +121,20 @@ class BoardgamesController extends Controller
 
 	public function postNewBoardgame(Request $request)
 	{
+		$rules = array(
+			'name' => 'required|max:255',
+			'bgg_link' => 'required|max:255'
+		);
+
+		$validator = Validator::make(Input::all(), $rules);
+
+		if ($validator->fails())
+		{
+			$this->throwValidationException(
+				$request, $validator
+			);
+		}
+
 		$boardgame = new Boardgame;
 		$boardgame->name = trim(Input::get('name'));
 		$boardgame->bgg_link = trim(Input::get('bgg_link'));
@@ -190,6 +201,20 @@ class BoardgamesController extends Controller
 
 	public function postUpdateBoardgame(Boardgame $boardgame, Request $request)
 	{
+		$rules = array(
+			'name' => 'required|max:255',
+			'bgg_link' => 'required|max:255'
+		);
+
+		$validator = Validator::make(Input::all(), $rules);
+
+		if ($validator->fails())
+		{
+			$this->throwValidationException(
+				$request, $validator
+			);
+		}
+
 		$boardgame->name = trim(Input::get('name'));
 		$boardgame->bgg_link = trim(Input::get('bgg_link'));
 		
@@ -465,6 +490,10 @@ class BoardgamesController extends Controller
 
 	public function rateBg(Boardgame $boardgame, Request $request) {
 		$rating = Input::get('rating');
+
+		if (!$rating) {
+			return redirect('/boardgame/view/' . $boardgame->id);
+		}
 
 		$loged_user = Auth::user();
 

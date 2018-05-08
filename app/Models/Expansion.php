@@ -25,4 +25,9 @@ class Expansion extends Model
     {
         return $this->belongsToMany('App\Models\Publisher', 'expansion_publishers', 'expansion_id', 'publisher_id');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\User', 'user_expansions', 'expansion_id', 'user_id');
+    }
 }

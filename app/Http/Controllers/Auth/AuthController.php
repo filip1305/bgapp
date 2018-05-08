@@ -50,7 +50,7 @@ class AuthController extends Controller
         return Validator::make($data, [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'required|confirmed|min:6|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/',
         ]);
     }
 
@@ -92,11 +92,11 @@ class AuthController extends Controller
         $userActive = $this->verifyUserActivated($email);
 
         if ($userActive === null) {
-            return redirect('auth/login')->with('error_msg','Your account is not found in database. Please, register.');
+            return redirect('auth/login')->with('error_msg','Your account is not found in database. Please, register');
         }
 
         if (!$userActive) {
-            return redirect('auth/login')->with('error_msg','Your account is not activated. Please, check your email.');
+            return redirect('auth/login')->with('error_msg','Your account is not activated. Please, check your email');
         }
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
@@ -121,7 +121,7 @@ class AuthController extends Controller
             $this->incrementLoginAttempts($request);
         }
 
-        return redirect('auth/login')->with('error_msg','These credentials do not match our records.');
+        return redirect('auth/login')->with('error_msg','These credentials do not match our records');
     }
 
     /**
@@ -172,13 +172,13 @@ class AuthController extends Controller
 
     public function activateAccount($code) {
         if(!$code) {
-            return redirect('auth/login')->with('error_msg','Activation code is invalid!');
+            return redirect('auth/login')->with('error_msg','Activation code is invalid');
         }
 
         $user = User::where('activation_code', $code)->first();
 
         if (!$user) {
-            return redirect('auth/login')->with('error_msg','Activation code is invalid!');
+            return redirect('auth/login')->with('error_msg','Activation code is invalid');
         }
 
         $user->active = 1;
@@ -187,7 +187,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('boardgames/')->with('success','You successfully activated your account.');
+        return redirect('boardgames/')->with('success','You successfully activated your account');
     }
 
     public function getForgotPass() {
@@ -201,7 +201,7 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
 
         if (is_null($user)) {
-            return redirect('auth/login')->with('error_msg','Email not found in our database!');
+            return redirect('auth/login')->with('error_msg','Email not found in our database');
         }
 
         $token = $user->getResetPasswordCode();
@@ -210,14 +210,14 @@ class AuthController extends Controller
             $m->to($user->email, $user->name)->subject('Account recovery');
         });
 
-        return redirect('auth/login')->with('success','Please check your email for a message with reset password link!');
+        return redirect('auth/login')->with('success','Please check your email for a message with reset password link');
     }
 
     public function getResetPass($code) {
         $user = User::where('reset_password_code', $code)->first();
 
         if (!$user) {
-            return redirect('auth/login')->with('error_msg','Reset password code is invalid!');
+            return redirect('auth/login')->with('error_msg','Reset password code is invalid');
         }
 
         if ($user->active == 0) {
@@ -243,7 +243,7 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-            return redirect('boardgames/')->with('success','Password reset was successful.');
+            return redirect('boardgames/')->with('success','Password reset was successful');
         } else {
             return redirect('auth/recover/'.$code)->with('error_msg','Password don\'t match');
         }
