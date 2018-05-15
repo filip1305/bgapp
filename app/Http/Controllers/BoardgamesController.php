@@ -108,7 +108,6 @@ class BoardgamesController extends Controller
 		return view('boardgames.index', array(
 			'boardgames' => $boardgames,
 			'filters' => $filters,
-			'admin' => $loged_user->admin,
 			'publishers' => $publishers,
 			'categories' => $categories
 		));
