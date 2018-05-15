@@ -17,12 +17,14 @@
 Route::pattern('boardgame', '[0-9]+');
 Route::pattern('expansion', '[0-9]+');
 Route::pattern('user', '[0-9]+');
+Route::pattern('game', '[0-9]+');
 
 /**
  * Models binded
  */
 Route::model('boardgame', 'App\Models\Boardgame');
 Route::model('expansion', 'App\Models\Expansion');
+Route::model('game', 'App\Models\Game');
 Route::model('user', 'App\User');
 
 // Authentication routes...
@@ -68,6 +70,7 @@ Route::group(['middleware' => 'auth'], function() {
 
 	Route::post('expansion/add', 'ExpansionsController@postNewExpansion');
 	Route::post('expansion/edit/{expansion}', 'ExpansionsController@postUpdateExpansion');
+	Route::post('expansion/get', 'ExpansionsController@getAjaxExpansions');
 
 	// Users
 	Route::get('users', 'UsersController@getUsers');
@@ -87,4 +90,13 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::post('user/expansion/add', 'UsersController@postNewExpansion');
 	Route::get('user/expansion/delete/{expansion}', 'UsersController@getDeleteExpansion');
 
+	// Games
+	Route::get('games', 'GamesController@getGames');
+	Route::get('game/add', 'GamesController@getNewGame');
+	Route::get('game/edit/{game}', 'GamesController@getEditGame');
+	Route::get('game/view/{game}', 'GamesController@getGame');
+
+	Route::post('game/add', 'GamesController@postNewGame');
+	Route::post('game/edit/{game}', 'GamesController@postEditGame');
+	Route::post('game/comment/{game}', 'GamesController@postGameComment');
 });

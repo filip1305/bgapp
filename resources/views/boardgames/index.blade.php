@@ -12,7 +12,7 @@
     <div class="text-right">
         <div class="form-group">
             <a href="/boardgame/add" class="btn btn-default">Add new boardgame</a>
-            @if ($admin == 1)
+            @if (Auth::user()->admin == 1)
                 <a href="/boardgame/refresh" class="btn btn-default">Refresh BGG data</a>
             @endif
         </div>            
@@ -119,7 +119,7 @@
                                 <span style="display:none">0</span>
                             @endif
                         </td>
-                        <td class="text-center"><img style="max-height: 50px; width: auto; " src="{{$boardgame->thumbnail}}" /></td>
+                        <td class="text-center"><img style="max-height: 50px; width: auto; " src="{{$boardgame->thumbnail}}"/></td>
                         <td>
                             <a href="/boardgame/view/{{ $boardgame->id }}">{{ $boardgame->name }} ({{ $boardgame->yearpublished }})</a>
                         </td>
@@ -130,7 +130,7 @@
                                 @if (!empty($boardgame->bgg_link))
                                     <a href="{{ $boardgame->bgg_link }}" class="btn btn-default" target="_blank"><i class="fa fa-link fa-fw"></i></a>
                                 @endif
-                                @if ($admin == 1)
+                                @if (Auth::user()->admin == 1)
                                     <a href="/boardgame/edit/{{ $boardgame->id }}" class="btn btn-default"><i class="fa fa-edit fa-fw"></i></a>
                                 @endif
                             </div> 

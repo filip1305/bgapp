@@ -12,7 +12,7 @@
     <div class="text-right">
         <div class="form-group">
             <a href="/expansion/add" class="btn btn-default">Add new expansion</a>
-            @if ($admin == 1)
+            @if (Auth::user()->admin == 1)
                 <a href="/expansion/refresh" class="btn btn-default">Refresh BGG data</a>
             @endif
         </div>
@@ -61,7 +61,7 @@
                                 @if (!empty($boardgame->bgg_link))
                                     <a href="{{ $expansion->bgg_link }}" class="btn btn-default" target="_blank"><i class="fa fa-link fa-fw"></i></a>
                                 @endif
-                                @if ($admin == 1)
+                                @if (Auth::user()->admin == 1)
                                     <a href="/expansion/edit/{{ $expansion->id }}" class="btn btn-default"><i class="fa fa-edit fa-fw"></i></a>
                                 @endif
                             </div> 

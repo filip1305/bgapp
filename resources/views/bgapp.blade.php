@@ -47,6 +47,9 @@
 	                        <a href="{{ url ('expansions') }}"><i class="fa fa-empire fa-fw"></i> Expansions</a>
 	                    </li>
 	                    <li>
+	                        <a href="{{ url ('games') }}"><i class="fa fa-bomb fa-fw"></i> Games</a>
+	                    </li>
+	                    <li>
 	                        <a href="#"><i class="fa fa-users fa-fw"></i> Users<span class="fa arrow"></span></a>
 	                        <ul class="nav nav-second-level">
 	                        	<li>

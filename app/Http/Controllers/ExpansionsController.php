@@ -28,12 +28,9 @@ class ExpansionsController extends Controller
 			->orderBy('name', 'asc')
 			->get();
 
-		$loged_user = Auth::user();
-
 		return view('expansions.index', array(
 			'expansions' => $expansions,
-			'search' => $search,
-			'admin' => $loged_user->admin
+			'search' => $search
 		));
 	}
 
@@ -446,5 +443,13 @@ class ExpansionsController extends Controller
 		foreach ($bg_desigers as $bg_desiger) {
 			$bg_desiger->delete();
 		}
+	}
+
+	public function getAjaxExpansions(Request $request) {
+		$boardgame = Boardgame::where('id','=',$request->id)->first();
+
+		$expansions = $boardgame->expansions;
+
+		return \Response::json($expansions);
 	}
 }
