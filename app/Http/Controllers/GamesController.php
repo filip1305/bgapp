@@ -18,12 +18,60 @@ class GamesController extends Controller
 {
 	public function getGames()
 	{
-		$loged_user = Auth::user();
+		$player = 0;
+		$boardgame = 0;
+		$dateFrom = '';
+		$dateTo = '';
 
-		$games = Game::orderBy('date')->get();
+		$player = \Request::get('player');
+		$boardgame = \Request::get('boardgame');
+		$dateFrom = \Request::get('dateFrom');
+		$dateTo = \Request::get('dateTo');
+
+		$filters = [
+			'player' => $player,
+			'boardgame' => $boardgame,
+			'dateFrom' => $dateFrom,
+			'dateTo' => $dateTo
+		];
+
+		$query = Game::query();
+		$query->orderBy('date');
+
+		if ($player > 0) {
+			$mappings = GameUser::where('user_id', $player)->get();
+
+			$ids = [];
+
+			foreach ($mappings as $mapping) {
+				$ids[] = $mapping->game_id;
+			}
+
+			$query->whereIn('id', $ids);
+		}
+
+		if ($boardgame > 0) {
+			$query->where('boardgame_id', $boardgame);
+		}
+
+		if ($dateFrom) {
+			$query->where('date', '>=', $dateFrom);
+		}
+
+		if ($dateTo) {
+			$query->where('date', '<=', $dateTo);
+		}
+
+		$games = $query->get();
+
+		$users = User::orderBy('name')->get();
+		$boardgames = Boardgame::orderBy('name')->get();
+
 		return view('games.index', array(
 			'games' => $games,
-			'user' => $loged_user
+			'filters' => $filters,
+			'users' => $users,
+			'boardgames' => $boardgames
 		));
 	}
 

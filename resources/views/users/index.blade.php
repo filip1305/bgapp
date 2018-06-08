@@ -13,7 +13,7 @@
         <form action="/users" method="GET" class="form-inline">
             <div class="form-group">
                 Name:
-                <input type="text" class="form-control" name="name" placeholder="Name..." value="{{ $search }}">
+                <input type="text" class="form-control" name="name" placeholder="Name..." value="{{ $name }}">
             </div>
 
             <div class="form-group">

@@ -49,16 +49,16 @@ class BoardgamesController extends Controller
 
 		$query = Boardgame::query();
 
-		$query = $query->where('name','like','%'.$name.'%');
-		$query = $query->orderByRaw('rank = 0 ASC, rank');
+		$query->where('name','like','%'.$name.'%');
+		$query->orderByRaw('rank = 0 ASC, rank');
 
 		if (!empty($players)) {
-			$query = $query->where('minplayers', '<=', $players);
-			$query = $query->where('maxplayers', '>=', $players);
+			$query->where('minplayers', '<=', $players);
+			$query->where('maxplayers', '>=', $players);
 		}
 
 		if (!empty($year)) {
-			$query = $query->where('yearpublished', $year);
+			$query->where('yearpublished', $year);
 		}
 
 		if ($type == 1) {
@@ -71,7 +71,7 @@ class BoardgamesController extends Controller
 				$ids[] = $my_bs->boardgame_id;
 			}
 
-			$query = $query->whereIn('id', $ids);
+			$query->whereIn('id', $ids);
 		}
 
 		if ($category > 0) {
@@ -84,7 +84,7 @@ class BoardgamesController extends Controller
 				$ids[] = $mapping->boardgame_id;
 			}
 
-			$query = $query->whereIn('id', $ids);
+			$query->whereIn('id', $ids);
 		}
 
 		if ($publisher > 0) {
@@ -97,7 +97,7 @@ class BoardgamesController extends Controller
 				$ids[] = $mapping->boardgame_id;
 			}
 
-			$query = $query->whereIn('id', $ids);
+			$query->whereIn('id', $ids);
 		}
 
 		$boardgames = $query->get();

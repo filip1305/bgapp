@@ -17,16 +17,16 @@ class UsersController extends Controller
 
 	public function getUsers()
 	{
-		$search = '';
-		$search = \Request::get('search');
+		$name = '';
+		$name = \Request::get('name');
 
-		$users = User::where('name','like','%'.$search.'%')
+		$users = User::where('name','like','%'.$name.'%')
 			->orderBy('name', 'asc')
 			->get();
 
 		return view('users.index', array(
 			'users' => $users,
-			'search' => $search,
+			'name' => $name,
 		));
 	}
 
