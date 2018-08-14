@@ -106,7 +106,7 @@
                         <td class="text-right">
                             <div class="btn-group">
                                 <a href="/game/view/{{ $game->id }}" class="btn btn-default"><i class="fa fa-eye fa-fw"></i></a>
-                                @if ((Auth::user()->admin == 1) || ($user->id == $game->user_id))
+                                @if ((Auth::user()->admin == 1) || (Auth::user()->id == $game->user_id))
                                     <a href="/game/edit/{{ $game->id }}" class="btn btn-default"><i class="fa fa-edit fa-fw"></i></a>
                                 @endif
                             </div> 
