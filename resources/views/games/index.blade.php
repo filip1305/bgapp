@@ -75,6 +75,7 @@
             <thead>
                 <th width="100"></th>
                 <th>Boardgame</th>
+                <th width="250">Short Description</th>
                 <th width="70">Date</th>
                 <th width="100">No of players</th>
                 <th width="100">Length min.</th>
@@ -90,6 +91,9 @@
                         </td>
                         <td>
                             {{ $game->boardgame->name }}
+                        </td>
+                        <td>
+                            {{ $game->short_description }}
                         </td>
                         <td>
                             {{ $game->date }}
@@ -126,11 +130,11 @@
         $(document).ready(function() {
             $('#data').DataTable({
                 searching: false,
-                order: [[ 2, "desc" ]],
+                order: [[ 3, "desc" ]],
                 pageLength: 25,
                 columnDefs: [
                     { orderable: false, targets: 0 },
-                    { orderable: false, targets: 5 }
+                    { orderable: false, targets: 7 }
                 ]
             });
         });

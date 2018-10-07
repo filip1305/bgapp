@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\BggHelper;
 use App\Models\Boardgame;
 use App\Models\BoardgameCategory;
 use App\Models\BoardgameDesigner;
@@ -121,7 +122,6 @@ class BoardgamesController extends Controller
 	public function postNewBoardgame(Request $request)
 	{
 		$rules = array(
-			'name' => 'required|max:255',
 			'bgg_link' => 'required|max:255'
 		);
 
@@ -135,7 +135,6 @@ class BoardgamesController extends Controller
 		}
 
 		$boardgame = new Boardgame;
-		$boardgame->name = trim(Input::get('name'));
 		$boardgame->bgg_link = trim(Input::get('bgg_link'));
 
 		$bgg_id = 0;
@@ -156,13 +155,15 @@ class BoardgamesController extends Controller
 		$designers = [];
 
 		if ($bgg_id > 0) {
-			$bgg_data = $this->getDataFromBGG($bgg_id);
+            $bgg_data = BggHelper::getDataFromBGG($bgg_id);
 
 			$boardgame->bgg_id = $bgg_id;
 
 			if (!empty($bgg_data)) {
 
 				$this->setBggData($boardgame, $bgg_data);
+
+                $boardgame->name = $bgg_data['name'];
 
 				if (!empty($bgg_data['boardgamedesigner'])){
 					$designers = $bgg_data['boardgamedesigner'];
@@ -179,16 +180,16 @@ class BoardgamesController extends Controller
 				$this->validate($request, [
 			        'bgg_link' => 'unique:boardgames,bgg_link',
 			    ]);
+
+                $boardgame->save();
+
+                $this->saveDesignerMappings($boardgame, $designers);
+                $this->saveCategoryMappings($boardgame, $categories);
+                $this->savePublisherMappings($boardgame, $publishers);
 			}
 		}
 
-		$boardgame->save();
-
-		$this->saveDesignerMappings($boardgame, $designers);
-		$this->saveCategoryMappings($boardgame, $categories);
-		$this->savePublisherMappings($boardgame, $publishers);
-
-		return redirect('/boardgames/');
+        return redirect('/boardgames/');
 	}
 
 	public function getEditBoardgame(Boardgame $boardgame)
@@ -201,7 +202,6 @@ class BoardgamesController extends Controller
 	public function postUpdateBoardgame(Boardgame $boardgame, Request $request)
 	{
 		$rules = array(
-			'name' => 'required|max:255',
 			'bgg_link' => 'required|max:255'
 		);
 
@@ -214,7 +214,6 @@ class BoardgamesController extends Controller
 			);
 		}
 
-		$boardgame->name = trim(Input::get('name'));
 		$boardgame->bgg_link = trim(Input::get('bgg_link'));
 		
 		$bgg_id = 0;
@@ -237,13 +236,15 @@ class BoardgamesController extends Controller
 		$this->removeMappings($boardgame);
 
 		if ($bgg_id > 0) {
-			$bgg_data = $this->getDataFromBGG($bgg_id);
+            $bgg_data = BggHelper::getDataFromBGG($bgg_id);
 
 			$boardgame->bgg_id = $bgg_id;
 
 			if (!empty($bgg_data)) {
 
 				$this->setBggData($boardgame, $bgg_data);
+
+                $boardgame->name = $bgg_data['name'];
 
 				if (!empty($bgg_data['boardgamedesigner'])){
 					$designers = $bgg_data['boardgamedesigner'];
@@ -260,14 +261,14 @@ class BoardgamesController extends Controller
 				$this->validate($request, [
 			        'bgg_link' => 'unique:boardgames,bgg_link,' . $boardgame->id,
 			    ]);
+
+                $boardgame->save();
+
+                $this->saveDesignerMappings($boardgame, $designers);
+                $this->saveCategoryMappings($boardgame, $categories);
+                $this->savePublisherMappings($boardgame, $publishers);
 			}
 		}
-
-		$boardgame->save();
-
-		$this->saveDesignerMappings($boardgame, $designers);
-		$this->saveCategoryMappings($boardgame, $categories);
-		$this->savePublisherMappings($boardgame, $publishers);
 
 		return redirect('/boardgames/');
 	}
@@ -278,32 +279,6 @@ class BoardgamesController extends Controller
 			'boardgame' => $boardgame,
 			'expansions' => $boardgame->expansions
 		));
-	}
-
-	private function getDataFromBGG($id){
-		$curl = curl_init();
-
-	    curl_setopt_array($curl, array(
-	        CURLOPT_URL => "https://www.boardgamegeek.com/xmlapi/boardgame/" . $id . "?stats=1",
-	        CURLOPT_RETURNTRANSFER => true,
-	        CURLOPT_TIMEOUT => 5,
-	        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	        CURLOPT_CUSTOMREQUEST => "GET",
-	        CURLOPT_HTTPHEADER => array(
-	            "cache-control: no-cache"
-	        ),
-	    ));
-
-	    $response = curl_exec($curl);
-	    $err = curl_error($curl);
-
-	    curl_close($curl);
-
-	    $xml = simplexml_load_string($response);
-	    $json = json_encode($xml);
-	    $array = json_decode($json,TRUE);
-
-	    return $array['boardgame'];
 	}
 
 	public function refreshBggData(){
@@ -318,7 +293,7 @@ class BoardgamesController extends Controller
 		foreach ($boardgames as $boardgame) {
 
 			if ($boardgame->bgg_id > 0) {
-				$bgg_data = $this->getDataFromBGG($boardgame->bgg_id);
+                $bgg_data = BggHelper::getDataFromBGG($boardgame->bgg_id);
 
 				$publishers = [];
 				$categories = [];
@@ -368,6 +343,7 @@ class BoardgamesController extends Controller
 	}
 
 	private function setBggData(&$boardgame, $bgg_data) {
+		$boardgame->name = $bgg_data['name'];
 		$boardgame->yearpublished = $bgg_data['yearpublished'];
 		$boardgame->minplayers = $bgg_data['minplayers'];
 		$boardgame->maxplayers = $bgg_data['maxplayers'];

@@ -74,11 +74,20 @@
                 </div>
 
                 <div class="col-sm-7">
-                    <label>Description</label>
-                    <div>
-                        <textarea name="description" style="width:700px;" rows="10"></textarea>
+                    <div class="form-group">
+                        <label>Short Description</label>
+                        <div>
+                            <input id="short_description" name="short_description" style="width:700px;">
+                        </div>
                     </div>
-                </div>     
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <div>
+                            <textarea name="description" style="width:700px;" rows="10"></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="clearfix"></div>

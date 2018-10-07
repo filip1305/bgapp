@@ -16,13 +16,6 @@
             {{ csrf_field() }}
 
             <div class="form-group">
-                <label>Name</label>
-                <div>
-                    <input type="text" name="name" value="{{$expansion->name}}" style="width:400px;">
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label>Boardgames</label>
                 <div>
                     <select name="boardgames[]" multiple="multiple" style="width:400px;">

@@ -99,4 +99,7 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::post('game/add', 'GamesController@postNewGame');
 	Route::post('game/edit/{game}', 'GamesController@postEditGame');
 	Route::post('game/comment/{game}', 'GamesController@postGameComment');
+
+	// Statistics
+    Route::get('statistics', 'StatisticsController@getStatistics');
 });

@@ -184,6 +184,7 @@ class GamesController extends Controller
 		$game->date = trim($request['date']);
 		$game->minutes = intval(trim($request['minutes']));
 		$game->description = trim($request['description']);
+		$game->short_description = trim($request['short_description']);
 
 		$game->save();
 

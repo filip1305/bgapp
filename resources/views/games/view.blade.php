@@ -70,7 +70,7 @@
     <div class="col-sm-7">
         <h5><strong>Comments:</strong></h5>
 
-        @if (in_array(Auth::user()->id, $players))
+        {{--@if (in_array(Auth::user()->id, $players))--}}
 
             <form action="/game/comment/{{$game->id}}" method="POST">
                 {{ csrf_field() }}
@@ -80,7 +80,7 @@
                 <button type="submit" class="btn btn-default">Comment</button>
             </form>
 
-        @endif
+        {{--@endif--}}
 
         <table class="striped" width="100%">
             <tbody>

@@ -16,13 +16,6 @@
             {{ csrf_field() }}
 
             <div class="form-group">
-                <label>Name</label>
-                <div>
-                    <input type="text" name="name" style="width:400px;">
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label>BoardGameGeek Link</label>
                 <div>
                     <input type="text" name="bgg_link" style="width:400px;">
